@@ -1,7 +1,7 @@
 <template>
   <div class="register">
-    <h5>注册</h5>
-    <el-form :model="registerForm" :rules="loginRules" ref="registerForm" class="demo-ruleForm" label-width="80px"
+    <!-- <h5>注册</h5> -->
+    <el-form :model="registerForm" :rules="registerRules" ref="registerForm" class="demo-ruleForm" label-width="80px"
       label-position="right" hide-required-asterisk>
       <el-form-item prop="tel">
         <el-input v-model="registerForm.tel" placeholder="请输入手机号码">
@@ -24,15 +24,19 @@
         </el-input>
       </el-form-item>
     </el-form>
-    <el-button round @click="onRegister">注册</el-button>
-    <router-link to="/mycenter" class="login">去登录</router-link>
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
-      <span>这是一段信息</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
+    <div class="rulesTip" v-if="isShowRulesTip">
+      <div class="v-modal" tabindex="0" style="z-index: 2025;">
+      </div>
+      <div class="rulesTipBox">
+        <p class="rulesTitle">规则提示</p>
+        <p class="rulesContent">
+          发上来大家发送旅客当机立断就放声大哭
+          发上来大家发送旅客当机立断就放声大哭
+          发上来大家发送旅客当机立断就放声大哭
+        </p>
+        <el-button @click="hideRulesTip">{{rulesButtonText}}</el-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -71,7 +75,6 @@
         }
       };
       return {
-        dialogVisible: false,
         registerForm: {
           reqid: '',
           name: '',
@@ -81,7 +84,7 @@
           phone_num: "",
           password: ""
         },
-        loginRules: {
+        registerRules: {
           tel: [{
             required: true,
             validator: checkPhone,
@@ -108,10 +111,35 @@
             trigger: "blur"
           }],
         },
-        uploadCover: ''
+        uploadCover: '',
+        rulesTimer: 5,
+        rulesButtonText: '请认真阅读规则提示（5）秒',
+        isShowRulesTip: true
       };
     },
+    mounted() {
+      this.timer();
+    },
     methods: {
+      timer() {
+        const me = this;
+        let _timeInterval = setInterval(function () {
+          if (me.rulesTimer === 0) {
+            me.rulesTimer = 5;
+            me.rulesButtonText = '确定';
+            clearInterval(_timeInterval);
+          } else if (me.rulesTimer <= 5 && me.rulesTimer >= 1) {
+            me.rulesTimer--;
+            me.rulesButtonText = `请认真阅读规则提示（${me.rulesTimer}）秒`;
+          }
+        }, 1000);
+      },
+      hideRulesTip() {
+        if (this.rulesButtonText === '确定') {
+          console.log(11)
+          this.isShowRulesTip = false;
+        }
+      },
       onRegister() {
         this.$refs['registerForm'].validate(async (valid) => {
           if (valid) {
@@ -181,44 +209,28 @@
       font-size: 30px;
     }
 
-    .demo-ruleForm {
-      padding: 0 30px;
+    .rulesTip {
 
-      .el-icon-picture-outline {
-        font-size: 35px;
-      }
-
-      .filesUpload {
+      .rulesTipBox {
         position: absolute;
-        height: 38px;
-        opacity: 0;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%);
+        z-index: 4000;
+        width: 420px;
+        padding: 20px;
+        vertical-align: middle;
+        background-color: #fff;
+        border-radius: 4px;
+        border: 1px solid #ebeef5;
+        font-size: 18px;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+        text-align: left;
+        overflow: hidden;
+        backface-visibility: hidden;
+        color: #000;
+        text-align: center
       }
-    }
-
-    .el-button {
-      position: absolute;
-      margin-top: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 250px;
-      border-color: #409eff;
-      color: #409eff;
-    }
-
-    .el-input {
-      width: 80%;
-    }
-
-    .el-select {
-      width: 100%;
-    }
-
-    .login {
-      color: #409eff;
-      position: absolute;
-      margin-top: 80px;
-      left: 50%;
-      transform: translateX(-50%);
     }
   }
 </style>

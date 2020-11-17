@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-15 17:20:34
- * @LastEditTime: 2020-11-17 11:19:49
+ * @LastEditTime: 2020-11-17 11:30:31
  * @FillPath: Do not edit
 -->
 <!--
@@ -22,10 +22,6 @@
         <el-form-item label="密码" prop="password">
           <el-input v-model="loginForm.password"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('loginForm')">立即创建</el-button>
-          <el-button @click="resetForm('loginForm')">重置</el-button>
-        </el-form-item>
       </el-form>
     </div>
     <div class="account">
@@ -44,7 +40,8 @@
       </el-form>
     </div>
     <div>
-      <el-button @click="onAccountLogin">登录</el-button>
+      <el-button @click="onAccountLogin">账号密码登录</el-button>
+      <el-button @click="onSMSLogin">验证码登录</el-button>
     </div>
   </div>
 </template>
@@ -53,7 +50,8 @@
 <script>
   import {
     sendSMSCode,
-    accountLogin
+    accountLogin,
+    smsLogin
   } from '@/api/login';
   import {
     uuid,
@@ -169,9 +167,18 @@
         accountLogin(options).then(res => {
           console.log(res)
         })
-      }
+      },
       // 验证码登录
-
+      onSMSLogin() {
+        const options = {
+          phone_num: this.loginForm.phone_num,
+          valid_num: this.loginForm.code,
+          reqid: uuid()
+        }
+        smsLogin(options).then(res => {
+          console.log(res)
+        })
+      }
     }
   }
 </script>

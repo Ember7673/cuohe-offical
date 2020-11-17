@@ -1,14 +1,14 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-12 16:48:21
- * @LastEditTime: 2020-11-17 11:04:09
+ * @LastEditTime: 2020-11-17 11:31:15
  * @FillPath: Do not edit
 -->
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <Login></Login>
-    <!-- <Register></Register> -->
+    <!-- <Login></Login> -->
+    <Register></Register>
   </div>
 </template>
 
