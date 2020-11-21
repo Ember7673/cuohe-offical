@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie'
+const CryptoJS = require('crypto-js');
 
 export const uuid = () => {
   var s = [];
@@ -74,4 +75,49 @@ export const checkIDCard = (idcode) => {
 
   // 返回验证结果，校验码和格式同时正确才算是合法的身份证号码
   return last === last_no && format ? true : false;
+}
+
+// aes加密
+export function Encrypt(word) {
+  let key = '20|!^20wg20~8$01';
+  let iv = 'c0ab1f54he78k36d';
+
+  key = CryptoJS.enc.Utf8.parse(key);
+  iv = CryptoJS.enc.Utf8.parse(iv);
+
+  let srcs = CryptoJS.enc.Utf8.parse(word);
+  // 加密模式为CBC，补码方式为PKCS5Padding（也就是PKCS7）
+  let encrypted = CryptoJS.AES.encrypt(srcs, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7
+  });
+
+  //返回base64
+  return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+
+}
+
+//aes解密
+export function Decrypt(word) {
+  let key = '20|!^20wg20~8$01';
+  let iv = 'c0ab1f54he78k36d';
+
+  key = CryptoJS.enc.Utf8.parse(key);
+  iv = CryptoJS.enc.Utf8.parse(iv);
+
+  let base64 = CryptoJS.enc.Base64.parse(word);
+
+  let src = CryptoJS.enc.Base64.stringify(base64);
+
+  // 解密模式为CBC，补码方式为PKCS5Padding（也就是PKCS7）
+  let decrypt = CryptoJS.AES.decrypt(src, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7
+  });
+
+  let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+  return decryptedStr.toString();
+
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="register">
-    <!-- <h5>注册</h5> -->
+    <div class="title">成为合作伙伴</div>
     <el-form :model="registerForm" :rules="registerRules" ref="registerForm" class="demo-ruleForm" label-width="80px"
       label-position="right" hide-required-asterisk>
       <el-form-item prop="tel">
@@ -10,6 +10,10 @@
       <el-form-item prop="code">
         <el-input v-model="registerForm.code" placeholder="请输入短信验证码">
         </el-input>
+        <div class="get-code">
+          <span v-if="!isShowTimer" @click="getSMSCode">获取验证码</span>
+          <span v-else>重新发送（{{smsTimer}}）秒</span>
+        </div>
       </el-form-item>
       <el-form-item prop="inviteCode">
         <el-input v-model="registerForm.inviteCode" placeholder="请输入邀请码">
@@ -20,10 +24,19 @@
         </el-input>
       </el-form-item>
       <el-form-item prop="repassword">
-        <el-input v-model="registerForm.repassword" placeholder="请输入登录密码">
+        <el-input v-model="registerForm.repassword" placeholder="请再次输入登录密码">
         </el-input>
       </el-form-item>
     </el-form>
+    <el-checkbox-group v-model="checkList">
+      <el-checkbox label="1">《规则提示》</el-checkbox>
+      <el-checkbox label="2">《保密协议》</el-checkbox>
+    </el-checkbox-group>
+
+    <button class="registerBtn">注册</button>
+
+    <p class="hasAccount" @click="$SignIn">已有账号，立即登录</p>
+
     <div class="rulesTip" v-if="isShowRulesTip">
       <div class="v-modal" tabindex="0" style="z-index: 2025;">
       </div>
@@ -46,9 +59,10 @@
   //   getCosToken,
   //   cosUpload
   // } from "@/api/login";
-  // import {
-  //   uuid
-  // } from "@/utils/index";
+  import {
+    uuid,
+    Encrypt
+  } from "@/utils/index";
   export default {
     name: 'register',
     data() {
@@ -74,6 +88,33 @@
           callback();
         }
       };
+      const checkPassword = (rule, value, callback) => {
+        const pwdRegex = new RegExp('(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,16}');
+        if (value === '') {
+          return callback(new Error('请输入密码'));
+        } else {
+
+          if (value.match(/([\u4E00-\u9FA5])+/)) {
+            return callback(new Error('不能包含中文字符'));
+          }
+
+          if (!pwdRegex.test(value)) {
+            return callback(new Error('密码必须为8-16位数字、字母、符号组合'));
+          }
+          callback();
+        }
+      };
+      const checkConfirmPssword = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('请再次输入密码'));
+        } else {
+          if (this.registerData.password !== this.registerData.confirmPassword) {
+            return callback(new Error('密码输入不一致，请重新输入'));
+          } else {
+            callback();
+          }
+        }
+      };
       return {
         registerForm: {
           reqid: '',
@@ -82,7 +123,7 @@
           card: '',
           card_file_name: '',
           phone_num: "",
-          password: ""
+          password: "",
         },
         registerRules: {
           tel: [{
@@ -102,19 +143,22 @@
           }],
           password: [{
             required: true,
-            message: "请输入登录密码",
+            validator: checkPassword,
             trigger: "blur"
           }],
           repassword: [{
             required: true,
-            message: "请再次输入登录密码",
+            validator: checkConfirmPssword,
             trigger: "blur"
           }],
         },
         uploadCover: '',
         rulesTimer: 5,
         rulesButtonText: '请认真阅读规则提示（5）秒',
-        isShowRulesTip: true
+        isShowRulesTip: false,
+        checkList: [],
+        smsTimer: 40,
+        isShowTimer: false,
       };
     },
     mounted() {
@@ -131,6 +175,46 @@
           } else if (me.rulesTimer <= 5 && me.rulesTimer >= 1) {
             me.rulesTimer--;
             me.rulesButtonText = `请认真阅读规则提示（${me.rulesTimer}）秒`;
+          }
+        }, 1000);
+      },
+      //获取短信验证码
+      getSMSCode() {
+        const me = this;
+        const data = {
+          phone_num: this.registerForm.phone_num,
+          reqid: uuid()
+        };
+        sendSMSCode(data).then(res => {
+          console.log(res)
+          const {
+            status,
+            message
+          } = res;
+          if (!status) {
+            me.$message.success('验证码已发送');
+            me.SMStimer();
+            me.isShowTimer = true;
+          } else {
+            me.$message({
+              type: 'error',
+              message: res.message,
+              duration: 1500
+            });
+          }
+        });
+      },
+      //短信验证码倒计时
+      SMStimer() {
+        const me = this;
+        let _timeInterval = setInterval(function () {
+          if (me.smsTimer === 0) {
+            me.isShowTimer = false;
+            me.smsTimer = 40;
+            clearInterval(_timeInterval);
+          } else if (me.smsTimer <= 40 && me.smsTimer >= 1) {
+            me.isShowTimer = true;
+            me.smsTimer--;
           }
         }, 1000);
       },
@@ -198,15 +282,19 @@
   };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .register {
     position: relative;
     margin: 0 auto;
+    // padding: 50px 40px 50px 40px;
 
-    h5 {
-      margin-top: 20%;
-      text-align: center;
-      font-size: 30px;
+    .title {
+      width: 100%;
+      height: 45px;
+      line-height: 45px;
+      background: #000;
+      color: #fff;
+      margin-bottom: 20px;
     }
 
     .rulesTip {
@@ -231,6 +319,32 @@
         color: #000;
         text-align: center
       }
+    }
+
+    /deep/ .el-form-item__content {
+      margin-left: 0 !important;
+      margin-bottom: 10px;
+    }
+
+    .get-code {
+      cursor: pointer;
+      position: absolute;
+      right: 15px;
+      bottom: 0;
+    }
+
+    .registerBtn {
+      width: 100%;
+      height: 40px;
+      background-image: linear-gradient(#c08a35, #7b500e);
+      border: none;
+      margin-top: 20px;
+    }
+
+    .hasAccount {
+      margin-top: 10px;
+      cursor: pointer;
+      color: #373737;
     }
   }
 </style>

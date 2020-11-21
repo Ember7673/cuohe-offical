@@ -1,11 +1,11 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:53:29
- * @LastEditTime: 2020-11-17 09:48:46
+ * @LastEditTime: 2020-11-21 17:53:11
  * @FillPath: Do not edit
  */
 import axios from 'axios'
-import { Loading, Message } from "element-ui"
+import { Message } from "element-ui"
 
 const config = {
   baseURL: '/official/api/',
@@ -19,38 +19,18 @@ const config = {
 
 
 const service = axios.create(config)
-let LoadingInstance = {}
 
 service.interceptors.request.use(config => {
-  LoadingInstance = Loading.service({ fullscreen: true })
-  // const token = getCookie('sid')
-  // if (token) {
-  //   config.headers.common.Authorization = `${token}`
-  // }
   return config
 }, error => {
-  LoadingInstance.close()
   Message.error({ message: '加载超时' })
   return Promise.reject(error)
 })
 
 service.interceptors.response.use(response => {
-  LoadingInstance.close()
-  // if (response.status === 401) {
-  //   Message({
-  //     type: 'error',
-  //     showClose: false,
-  //     message: '未授权或授权超时，请重新登录',
-  //     duration: 1500,
-  //     onClose: () => {
-  //       router.push('/Login')
-  //     }
-  //   })
-  //   return
-  // }
   return response
 }, error => {
-  LoadingInstance.close()
+  // LoadingInstance.close()
   if (error && error.response) {
     error.message = `连接错误${error.response.status}`
   } else {

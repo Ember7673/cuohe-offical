@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-12 17:00:11
- * @LastEditTime: 2020-11-17 09:54:59
+ * @LastEditTime: 2020-11-21 17:37:34
  * @FillPath: Do not edit
  */
 const path = require('path');
@@ -26,7 +26,7 @@ module.exports = {
     },
     proxy: {
       '/api/': {
-        target: 'http://193.112.240.150:60010',
+        target: 'http://124.156.212.27:60010',
         changeOrigin: true
       }
     }

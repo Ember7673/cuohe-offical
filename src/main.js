@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-12 16:48:21
- * @LastEditTime: 2020-11-17 10:51:21
+ * @LastEditTime: 2020-11-21 15:34:22
  * @FillPath: Do not edit
  */
 import Vue from 'vue'
@@ -12,6 +12,8 @@ import axios from 'axios';
 import VueRouter from 'vue-router';
 import routes from './router/index';
 import md5 from 'js-md5';
+import './assets/css/common.scss';
+import '@/config/auth';
 
 Vue.use(VueRouter)
 Vue.use(ElementUI);
