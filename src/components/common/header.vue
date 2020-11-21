@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-20 19:45:15
- * @LastEditTime: 2020-11-21 16:36:27
+ * @LastEditTime: 2020-11-21 22:12:03
  * @FillPath: Do not edit
 -->
 <template>
@@ -23,7 +23,26 @@
 </template>
 
 <script>
-  export default {}
+  import {
+    getIsLogin
+  } from '@/api/login';
+  import {
+    uuid
+  } from '@/utils/index';
+  export default {
+    created() {
+      this.isLogin();
+    },
+    methods: {
+      isLogin() {
+        getIsLogin({
+          reqid: uuid()
+        }).then(res => {
+          console.log(res)
+        })
+      }
+    }
+  }
 </script>
 
 <style lang="scss" scoped>
