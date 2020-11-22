@@ -1,0 +1,17 @@
+/*
+ * @Author: wangtengteng
+ * @Date: 2020-11-22 11:09:43
+ * @LastEditTime: 2020-11-22 11:09:44
+ * @FilePath: \cuohe-offical\src\store\index.js
+ */
+import Vue from 'vue';
+import Vuex from 'vuex';
+import auth from './modules/auth';
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  modules: {
+    auth
+  }
+});

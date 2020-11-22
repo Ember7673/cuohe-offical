@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-12 16:48:21
- * @LastEditTime: 2020-11-21 15:34:22
+ * @LastEditTime: 2020-11-22 11:31:58
  * @FillPath: Do not edit
  */
 import Vue from 'vue'
@@ -14,6 +14,7 @@ import routes from './router/index';
 import md5 from 'js-md5';
 import './assets/css/common.scss';
 import '@/config/auth';
+import store from './store';
 
 Vue.use(VueRouter)
 Vue.use(ElementUI);
@@ -28,5 +29,6 @@ const router = new VueRouter({
 
 new Vue({
   router,
+  store,
   render: h => h(App),
 }).$mount('#app')
