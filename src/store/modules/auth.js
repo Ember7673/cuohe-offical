@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-22 11:10:26
- * @LastEditTime: 2020-11-22 11:41:06
+ * @LastEditTime: 2020-11-22 16:21:22
  * @FilePath: \cuohe-offical\src\store\modules\auth.js
  */
 const authStore = {
@@ -14,7 +14,7 @@ const authStore = {
       state.userInfo = conext.userInfo;
     }
   },
-  actions: {
+  getters: {
 
   }
 }

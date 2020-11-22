@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-21 15:21:43
- * @LastEditTime: 2020-11-21 17:08:25
+ * @LastEditTime: 2020-11-22 17:23:18
  * @FillPath: Do not edit
 -->
 <template>
@@ -17,7 +17,7 @@
 
 </template>
 <script type="text/babel">
-  import SignIn from './login';
+import SignIn from './login';
 import Register from './register';
 
 export default {
@@ -45,7 +45,7 @@ export default {
     }
   },
   methods: {
-    onClose() {
+    onClose () {
       console.log(111)
       this.visible = false;
     }
@@ -53,32 +53,32 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-  .authModule__wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    text-align: center;
-    z-index: 2001;
+.authModule__wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 2001;
 
-    .loginDialogPanel {
-      width: 500px;
-      margin: 0 auto;
+  .loginDialogPanel {
+    width: 500px;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3000;
+    background: #fff;
+    padding: 50px 40px 50px 40px;
+
+    .closeIcon {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 3000;
-      background: #fff;
-      padding: 50px 40px 50px 40px;
-
-      .closeIcon {
-        position: absolute;
-        top: 8px;
-        right: 11px;
-        font-size: 30px;
-      }
+      top: 8px;
+      right: 11px;
+      font-size: 30px;
     }
   }
+}
 </style>

@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-15 17:20:34
- * @LastEditTime: 2020-11-22 11:44:32
+ * @LastEditTime: 2020-11-22 17:13:56
  * @FillPath: Do not edit
 -->
 <template>
@@ -167,7 +167,7 @@ export default {
             const { status, user, message } = res.data;
             if (!status) {
               this.$auth.close();
-              setCookie('userAvatar', this.userInfo.avatar);
+              setCookie('userAvatar', user.avatar);
               this.$message.success('登录成功');
             } else if (status === 7009) {
               this.$message.error('用户账号不存在');
@@ -191,15 +191,17 @@ export default {
             reqid: uuid()
           }
           smsLogin(options).then(res => {
-            if (!res.data.status) {
+            const { status, user, message } = res.data;
+            if (!status) {
               this.$auth.close();
+              setCookie('userAvatar', user.avatar);
               this.$message.success('登录成功');
-            } else if (res.data.status === 7009) {
-              this.$message.error('用户账号不存在');
-            } else if (res.data.status === 3030) {
+            } else if (status === 7009) {
+              this.$message.error('用户不存在，请先注册账号');
+            } else if (status === 3030) {
               this.$message.error('验证码错误');
             } else {
-              this.$message.error(res.data.message);
+              this.$message.error(message);
             }
           })
         } else {

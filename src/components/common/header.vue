@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-20 19:45:15
- * @LastEditTime: 2020-11-22 11:45:52
+ * @LastEditTime: 2020-11-22 15:33:52
  * @FillPath: Do not edit
 -->
 <template>
@@ -27,7 +27,7 @@
               <el-dropdown-item>
                 <router-link to="/mycenter">个人中心</router-link>
               </el-dropdown-item>
-              <el-dropdown-item>退出登录</el-dropdown-item>
+              <el-dropdown-item><span @click="onLogout">退出登录</span></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -39,12 +39,14 @@
 
 <script>
 import {
-  getIsLogin
+  getIsLogin,
+  logout
 } from '@/api/login';
 import {
   uuid,
   getCookie,
-  setCookie
+  setCookie,
+  removeCookie
 } from '@/utils/index';
 export default {
   data () {
@@ -71,12 +73,26 @@ export default {
         if (!status) {
           this.isLogged = true;
           this.userInfo = user;
-          setCookie('userAvatar', this.userInfo.avatar);
+          removeCookie('userAvatar')
+          setCookie('userAvatar', user.avatar);
         } else if (status === 100) {
           this.isLogged = false;
         } else {
           this.isLogged = false;
           this.$message.error(message);
+        }
+      })
+    },
+    onLogout () {
+      console.log(111)
+      logout({
+        reqid: uuid()
+      }).then(res => {
+        const { status, message } = res.data;
+        if (!status) {
+          this.$router.push('/');
+          this.isLogged = false;
+          this.$message.success('退出登录成功');
         }
       })
     }

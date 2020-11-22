@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:55:23
- * @LastEditTime: 2020-11-21 22:09:57
+ * @LastEditTime: 2020-11-22 16:41:50
  * @FillPath: Do not edit
  */
 import $http from '@/config/http';
@@ -32,5 +32,17 @@ export const smsLogin = (params) => {
 // 是否登录
 export const getIsLogin = (params) => {
   let requestUrl = '/get-session-info';
+  return $http.post(requestUrl, params)
+}
+
+// 登出
+export const logout = (params) => {
+  let requestUrl = '/logout';
+  return $http.post(requestUrl, params)
+}
+
+// 注册
+export const createUser = (params) => {
+  let requestUrl = '/create-user';
   return $http.post(requestUrl, params)
 }
