@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:55:23
- * @LastEditTime: 2020-11-22 16:41:50
+ * @LastEditTime: 2020-11-23 23:27:25
  * @FillPath: Do not edit
  */
 import $http from '@/config/http';
@@ -44,5 +44,11 @@ export const logout = (params) => {
 // 注册
 export const createUser = (params) => {
   let requestUrl = '/create-user';
+  return $http.post(requestUrl, params)
+}
+
+// 用户身份验证
+export const verifyUserIdentity = (params) => {
+  let requestUrl = '/verify-user-identity';
   return $http.post(requestUrl, params)
 }
