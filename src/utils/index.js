@@ -78,7 +78,7 @@ export const checkIDCard = (idcode) => {
 }
 
 // aes加密
-export function Encrypt(word) {
+export function Encrypt (word) {
   let key = '20|!^20wg20~8$01';
   let iv = 'c0ab1f54he78k36d';
 
@@ -99,7 +99,7 @@ export function Encrypt(word) {
 }
 
 //aes解密
-export function Decrypt(word) {
+export function Decrypt (word) {
   let key = '20|!^20wg20~8$01';
   let iv = 'c0ab1f54he78k36d';
 
@@ -120,4 +120,25 @@ export function Decrypt(word) {
   let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
   return decryptedStr.toString();
 
+}
+
+export const throttle = function (func, delay) {
+  var timer = null;
+  return function () {
+    var context = this;
+    var args = arguments;
+    if (!timer) {
+      timer = setTimeout(function () {
+        func.apply(context, args);
+        timer = null;
+      }, delay);
+    }
+  }
+}
+
+export const isEmptyObject = function (obj) {
+  for (var key in obj) {
+    return false;
+  }
+  return true;
 }

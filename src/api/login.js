@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:55:23
- * @LastEditTime: 2020-11-23 23:27:25
+ * @LastEditTime: 2020-11-24 14:37:51
  * @FillPath: Do not edit
  */
 import $http from '@/config/http';
@@ -50,5 +50,33 @@ export const createUser = (params) => {
 // 用户身份验证
 export const verifyUserIdentity = (params) => {
   let requestUrl = '/verify-user-identity';
+  return $http.post(requestUrl, params)
+}
+
+// 行业类型
+export const getIndustryListMoudle = (params) => {
+  let requestUrl = '/industry-list';
+  return $http.post(requestUrl, params)
+}
+// 职位列表
+export const getPositionListMoudle = (params) => {
+  let requestUrl = '/position-list';
+  return $http.post(requestUrl, params)
+}
+// 判断昵称是否存在
+export const checkNnickNameExistMoudle = (params) => {
+  let requestUrl = '/check-nick-name-exist';
+  return $http.post(requestUrl, params)
+}
+
+// 获取头像资源列表
+export const getAvatarListMoudle = (params) => {
+  let requestUrl = '/get-avatar-list';
+  return $http.post(requestUrl, params)
+}
+
+// 设置账号信息
+export const setUserInfoMoudle = (params) => {
+  let requestUrl = '/set-user-info';
   return $http.post(requestUrl, params)
 }

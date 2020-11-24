@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-20 19:45:15
- * @LastEditTime: 2020-11-23 22:55:16
+ * @LastEditTime: 2020-11-24 18:27:26
  * @FillPath: Do not edit
 -->
 <template>
@@ -11,7 +11,8 @@
         <router-link to="/">logo</router-link>
       </div>
       <div class="operation">
-        <p class="translate">简体中文</p>
+        <p class="translate">简体中文
+        </p>
         <div v-show="!isLogged" class="notLogged">
           <p class="login" @click="$SignIn">
             登录
@@ -21,8 +22,8 @@
         <div v-show="isLogged" class="logged">
           <el-dropdown>
             <span class="el-dropdown-link">
-              <img src="../../assets/image/aboutus.png" alt="">
-              <p>{{isLogged && getUserInfo.phone_num}}</p>
+              <img :src="curAvatar ? curAvatar : this.avatar" alt="">
+              <p>{{isLogged && curUserInfo.phone_num}}</p>
             </span>
             <el-dropdown-menu slot="dropdown">
               <router-link to="/mycenter">
@@ -43,147 +44,161 @@
 </template>
 
 <script>
-  import {
-    getIsLogin,
-    logout
-  } from '@/api/login';
-  import {
-    uuid,
-    getCookie,
-    setCookie,
-    removeCookie
-  } from '@/utils/index';
-  export default {
-    data() {
-      return {
-        isLogged: false,
-        avatar: '',
-      }
+import {
+  getIsLogin,
+  logout
+} from '@/api/login';
+import { mapState } from 'vuex'
+import {
+  uuid,
+  getCookie,
+  setCookie,
+  removeCookie,
+  isEmptyObject
+} from '@/utils/index';
+export default {
+  data () {
+    return {
+      isLogged: false,
+      avatar: '',
+    }
+  },
+  computed: {
+    curUserInfo () {
+      const user = this.$store.state.auth.userInfo;
+      console.log('触发-=-=', user)
+      return isEmptyObject(user) ? {} : JSON.parse(user);
     },
-    computed: {
-      getUserInfo() {
-        const user = JSON.parse(this.$store.state.auth.userInfo);
-        return user;
-      }
-    },
-    created() {
-      console.log('userInfo-----', this.getUserInfo)
-      if (!getCookie('heat_sess_official')) {
-        this.isLogin();
-      } else {
+    ...mapState({
+      userInfo2: state => state.userInfo
+    }),
+    curAvatar () {
+      if (this.$store.state.auth.avatar) {
         this.isLogged = true;
-        this.avatar = getCookie('userAvatar');
       }
+      return this.$store.state.auth.avatar;
+    }
+  },
+  created () {
+    if (!getCookie('heat_sess_official')) {
+      this.isLogin();
+    } else {
+      this.isLogged = true;
+    }
+  },
+  mounted () {
+    this.avatar = window.localStorage.getItem('avatar');
+  },
+  methods: {
+    isLogin () {
+      getIsLogin({
+        reqid: uuid()
+      }).then(res => {
+        const {
+          status,
+          message,
+          user
+        } = res.data;
+        if (!status) {
+          this.isLogged = true;
+          this.$auth.removeUserInfo();
+          store.commit('auth/getUserInfo', JSON.stringify(user))
+          store.commit('auth/getAvatar', user.avatar)
+        } else if (status === 100) {
+          this.isLogged = false;
+        } else {
+          this.isLogged = false;
+          this.$message.error(message);
+        }
+      })
     },
-    methods: {
-      isLogin() {
-        getIsLogin({
-          reqid: uuid()
-        }).then(res => {
-          const {
-            status,
-            message,
-            user
-          } = res.data;
-          if (!status) {
-            this.isLogged = true;
-            this.$auth.removeUserInfo();
-            this.$auth.setUserInfo(user);
-          } else if (status === 100) {
-            this.isLogged = false;
-          } else {
-            this.isLogged = false;
-            this.$message.error(message);
-          }
-        })
-      },
-      onLogout() {
-        logout({
-          reqid: uuid()
-        }).then(res => {
-          const {
-            status,
-            message
-          } = res.data;
-          if (!status) {
-            this.$router.push('/');
-            this.isLogged = false;
-            this.$auth.removeUserInfo();
-            this.$message.success('退出登录成功');
-          }
-        })
-      }
+    onLogout () {
+      logout({
+        reqid: uuid()
+      }).then(res => {
+        const {
+          status,
+          message
+        } = res.data;
+        if (!status) {
+          this.$router.push('/');
+          this.isLogged = false;
+          this.$auth.removeUserInfo();
+          this.$message.success('退出登录成功');
+        }
+      })
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  .header {
-    width: 100%;
-    background: #000;
-    color: #fff;
+.header {
+  width: 100%;
+  background: #000;
+  color: #fff;
 
-    .header-content {
-      width: 1200px;
-      height: 70px;
-      line-height: 70px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
+  .header-content {
+    width: 1200px;
+    height: 70px;
+    line-height: 70px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
 
-      .logo {
-        width: 200px;
-        height: auto;
-        font-size: 30px;
+    .logo {
+      width: 200px;
+      height: auto;
+      font-size: 30px;
+    }
+
+    .operation {
+      p {
+        display: inline-block;
+        margin-right: 25px;
+        font-size: 16px;
+        font-weight: 400;
+        font-family: "Montserrat";
+        cursor: pointer;
       }
 
-      .operation {
-        p {
-          display: inline-block;
-          margin-right: 25px;
-          font-family: Microsoft YaHei;
-          font-size: 16px;
-          font-weight: bold;
-          cursor: pointer;
+      .notLogged {
+        display: inline-block;
+      }
+
+      .logged {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+
+        img {
+          width: 40px;
+          height: 40px;
+          vertical-align: middle;
+          border-radius: 50%;
         }
 
-        .notLogged {
-          display: inline-block;
-        }
+        .loggedPanel {
+          width: 100px;
+          position: absolute;
+          top: 65px;
+          left: 0;
+          background: #fff;
+          padding: 10px;
+          z-index: 2;
+          border: 1px solid #ebeef5;
+          border-radius: 4px;
+          box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
-        .logged {
-          position: relative;
-          display: inline-block;
-          cursor: pointer;
-
-          img {
-            width: 40px;
-            height: 40px;
-            vertical-align: middle;
-            border-radius: 50%;
-          }
-
-          .loggedPanel {
-            width: 100px;
-            position: absolute;
-            top: 65px;
-            left: 0;
-            background: #fff;
-            padding: 10px;
-            z-index: 2;
-            border: 1px solid #ebeef5;
-            border-radius: 4px;
-            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-
-            li {
-              height: 30px;
-              line-height: 30px;
-              font-size: 14px;
-              color: #606266;
-            }
+          li {
+            height: 30px;
+            line-height: 30px;
+            font-size: 14px;
+            color: #606266;
           }
         }
       }
     }
   }
+}
 </style>

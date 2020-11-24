@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-21 15:23:55
- * @LastEditTime: 2020-11-23 17:14:10
+ * @LastEditTime: 2020-11-24 17:06:38
  * @FillPath: Do not edit
  */
 import Vue from 'vue';
@@ -65,7 +65,7 @@ authModule.close = () => {
 };
 
 authModule.setUserInfo = (userInfo) => {
-  store.commit('auth/getUserInfo', userInfo)
+  store.dispatch('auth/putUserInfo', userInfo)
 }
 
 authModule.removeUserInfo = () => {
