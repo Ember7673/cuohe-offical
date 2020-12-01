@@ -1,40 +1,7 @@
 <!--
- * _______________#########_______________________ 
- * ______________############_____________________ 
- * ______________#############____________________ 
- * _____________##__###########___________________ 
- * ____________###__######_#####__________________ 
- * ____________###_#######___####_________________ 
- * ___________###__##########_####________________ 
- * __________####__###########_####_______________ 
- * ________#####___###########__#####_____________ 
- * _______######___###_########___#####___________ 
- * _______#####___###___########___######_________ 
- * ______######___###__###########___######_______ 
- * _____######___####_##############__######______ 
- * ____#######__#####################_#######_____ 
- * ____#######__##############################____ 
- * ___#######__######_#################_#######___ 
- * ___#######__######_######_#########___######___ 
- * ___#######____##__######___######_____######___ 
- * ___#######________######____#####_____#####____ 
- * ____######________#####_____#####_____####_____ 
- * _____#####________####______#####_____###______ 
- * ______#####______;###________###______#________ 
- * ________##_______####________####______________ 
- -->
-
-<!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:29:54
- * @LastEditTime: 2020-11-24 16:07:29
- * @FillPath: Do not edit
--->
-import Register from '@/components/login/register';
-<!--
- * @Author: wangtengteng
- * @Date: 2020-11-16 09:29:54
- * @LastEditTime: 2020-11-20 18:49:23
+ * @LastEditTime: 2020-11-27 11:11:02
  * @FillPath: Do not edit
 -->
 <template>
@@ -82,164 +49,165 @@ import Register from '@/components/login/register';
 </template>
 
 <script>
-export default {
-  methods: {
-    onMouseover (event) {
-      let e = event || window.event;
-      let left = e.clientX;
-      let top = e.clientY;
-      // console.log(left, top)
+  export default {
+    methods: {
+      onMouseover(event) {
+        let e = event || window.event;
+        let left = e.clientX;
+        let top = e.clientY;
+        // console.log(left, top)
 
-      this.$refs['banner1'].style.left = -(left / 15) + 'px';
-      this.$refs['banner1'].style.top = -(top / 15) + 'px';
-      this.$refs['banner2'].style.left = -(left / 40) + 'px';
-      this.$refs['banner2'].style.top = -(top / 40) + 'px';
-      this.$refs['banner3'].style.left = -(left / 40) + 'px';
-      this.$refs['banner3'].style.top = -(top / 40) + 'px';
-    },
+        this.$refs['banner1'].style.left = -(left / 15) + 'px';
+        this.$refs['banner1'].style.top = -(top / 15) + 'px';
+        this.$refs['banner2'].style.left = -(left / 40) + 'px';
+        this.$refs['banner2'].style.top = -(top / 40) + 'px';
+        this.$refs['banner3'].style.left = -(left / 40) + 'px';
+        this.$refs['banner3'].style.top = -(top / 40) + 'px';
+      },
+    }
   }
-}
 </script>
 
 <style lang="scss" scoped>
-.home {
-  background: #000;
-  color: #fff;
-  min-width: 1200px;
-  font-weight: 100;
-
-  .home-body {
-    position: relative;
-    display: flex;
-    width: 100%;
-    padding-top: 10px;
-    height: 900px;
+  .home {
     background: #000;
-    // max-width: 1500px;
-    margin: 0 auto;
+    color: #fff;
+    min-width: 1200px;
 
-    .home-banner {
-      flex: 1;
-      width: 100%;
+    .home-body {
       position: relative;
-      min-height: 1000px;
-      margin-left: 80px;
-      img {
-        width: 87%;
-        // max-width: 90%;
-        // min-width: 700px;
-      }
+      display: flex;
+      width: 100%;
+      padding-top: 10px;
+      height: 900px;
+      background: #000;
+      // max-width: 1500px;
+      margin: 0 auto;
 
-      .banner1 {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 95%;
-      }
-
-      .banner2 {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 87%;
-      }
-
-      .banner3 {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 85%;
-      }
-    }
-
-    .home-content {
-      width: 300px;
-      min-height: 130px;
-      margin-right: 50px;
-      margin-top: 30px;
-      position: absolute;
-      top: 90px;
-      right: 10%;
-
-      .guigu {
+      .home-banner {
+        flex: 1;
+        width: 100%;
         position: relative;
-        z-index: 0;
+        min-height: 1000px;
+        margin-left: 80px;
 
         img {
-          width: 39px;
+          width: 87%;
+          // max-width: 90%;
+          // min-width: 700px;
+        }
+
+        .banner1 {
           position: absolute;
-          top: -5px;
-          left: 37px;
-          z-index: -1;
+          top: 0;
+          left: 0;
+          width: 95%;
         }
 
-        p {
-          font-size: 30px;
-          position: relative;
-          z-index: 9;
+        .banner2 {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 87%;
         }
 
-        span {
-          font-size: 20px;
-        }
-      }
-
-      .china {
-        margin-top: 20px;
-
-        p {
-          font-size: 30px;
-        }
-
-        span {
-          font-size: 20px;
+        .banner3 {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 85%;
         }
       }
 
-      .money {
-        margin-top: 20px;
-        p {
-          display: inline;
-          font-size: 26px;
-          color: #ae7f35;
-        }
-
-        span {
-          font-size: 13px;
-        }
-
-        .longLine {
-          display: inline-block;
-          width: 50px;
-          height: 1px;
-          background: #ae7f35;
-          margin-right: 30px;
-        }
-
-        .shortLine {
-          display: inline-block;
-          width: 30px;
-          height: 1px;
-          background: #ae7f35;
-        }
-      }
-
-      .aboutus {
-        text-align: center;
+      .home-content {
+        width: 300px;
+        min-height: 130px;
+        margin-right: 50px;
         margin-top: 30px;
-        padding: 10px;
-        border: 1px solid #ae7f354d;
+        position: absolute;
+        top: 90px;
+        right: 10%;
 
-        img {
-          height: 40px;
+        .guigu {
+          position: relative;
+          z-index: 0;
+
+          img {
+            width: 39px;
+            position: absolute;
+            top: -5px;
+            left: 37px;
+            z-index: -1;
+          }
+
+          p {
+            font-size: 30px;
+            position: relative;
+            z-index: 9;
+          }
+
+          span {
+            font-size: 20px;
+          }
         }
 
-        p {
-          font-size: 14px;
-          margin-top: 10px;
+        .china {
+          margin-top: 20px;
+
+          p {
+            font-size: 30px;
+          }
+
+          span {
+            font-size: 20px;
+          }
+        }
+
+        .money {
+          margin-top: 20px;
+
+          p {
+            display: inline;
+            font-size: 26px;
+            color: #ae7f35;
+          }
+
+          span {
+            font-size: 13px;
+          }
+
+          .longLine {
+            display: inline-block;
+            width: 50px;
+            height: 1px;
+            background: #ae7f35;
+            margin-right: 30px;
+          }
+
+          .shortLine {
+            display: inline-block;
+            width: 30px;
+            height: 1px;
+            background: #ae7f35;
+          }
+        }
+
+        .aboutus {
+          text-align: center;
+          margin-top: 30px;
+          padding: 10px;
+          border: 1px solid #ae7f354d;
+
+          img {
+            height: 40px;
+          }
+
+          p {
+            font-size: 14px;
+            margin-top: 10px;
+          }
         }
       }
     }
   }
-}
 </style>

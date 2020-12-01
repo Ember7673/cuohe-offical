@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:55:23
- * @LastEditTime: 2020-11-24 14:37:51
+ * @LastEditTime: 2020-11-26 22:08:00
  * @FillPath: Do not edit
  */
 import $http from '@/config/http';
@@ -78,5 +78,16 @@ export const getAvatarListMoudle = (params) => {
 // 设置账号信息
 export const setUserInfoMoudle = (params) => {
   let requestUrl = '/set-user-info';
+  return $http.post(requestUrl, params)
+}
+
+// 校验验证码（重置密码用）
+export const checkValidCodeMoudle = (params) => {
+  let requestUrl = '/check-valid-code';
+  return $http.post(requestUrl, params)
+}
+// 重置密码
+export const resetPasswordMoudle = (params) => {
+  let requestUrl = '/reset-password';
   return $http.post(requestUrl, params)
 }

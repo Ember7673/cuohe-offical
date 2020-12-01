@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:28:16
- * @LastEditTime: 2020-11-24 14:38:18
+ * @LastEditTime: 2020-11-26 22:16:47
  * @FillPath: Do not edit
  */
 
@@ -11,6 +11,8 @@ import IdVerify from '@/views/Userinfo/IdVerify';
 import Choose from '@/views/Userinfo/choose';
 import PersonInfo from '@/views/Userinfo/personalInfo';
 import Done from '@/views/Userinfo/done';
+import ResetPassword from '@/views/Userinfo/password';
+import ResetPasswordSuccess from '@/views/Userinfo/resetPasswordSuccess';
 
 const routes = [
   {
@@ -35,6 +37,14 @@ const routes = [
   {
     path: '/done',
     component: Done
+  },
+  {
+    path: '/resetPassword',
+    component: ResetPassword
+  },
+  {
+    path: '/resetPasswordSuccess',
+    component: ResetPasswordSuccess
   }
 ]
 export default routes;
