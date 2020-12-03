@@ -2,7 +2,7 @@ import { uuid } from '@/utils/index';
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:37:42
- * @LastEditTime: 2020-12-03 20:36:06
+ * @LastEditTime: 2020-12-03 21:17:31
  * @FillPath: Do not edit
 -->
 <template>
@@ -94,6 +94,9 @@ import { uuid } from '@/utils/index';
     createResourceMoudle
   } from '@/api/myCenter';
   import {
+    getIsLogin
+  } from '@/api/login';
+  import {
     uuid
   } from "@/utils/index";
   import listMoudle from '@/components/myCenter/list';
@@ -147,11 +150,27 @@ import { uuid } from '@/utils/index';
       }
     },
     created() {
-      this.userInfo = JSON.parse(JSON.parse(window.localStorage.getItem('userInfo')));
-      this.getRequirementList('1,2,3,4', 1, 10);
-      this.getResourceList('1,2', 1, 10);
+      this.getUserInfo();
     },
     methods: {
+      getUserInfo() {
+        getIsLogin({
+          reqid: uuid()
+        }).then(res => {
+          const {
+            status,
+            message,
+            user
+          } = res.data;
+          if (!status) {
+            this.userInfo = user;
+            this.getRequirementList('1,2,3,4', 1, 10);
+            this.getResourceList('1,2', 1, 10);
+          } else {
+            this.$message.error(message);
+          }
+        })
+      },
       toRequirement() {
         this.$router.push('/mycenter');
       },

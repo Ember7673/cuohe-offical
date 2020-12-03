@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:53:29
- * @LastEditTime: 2020-12-03 18:56:04
+ * @LastEditTime: 2020-12-03 21:21:14
  * @FillPath: Do not edit
  */
 import axios from 'axios'
@@ -34,6 +34,8 @@ service.interceptors.response.use(response => {
   if (status === 100) {
     vm.$auth.removeUserInfo();
     vm.$SignIn();
+    Message.error({ message: '用户未登录' })
+    return;
   }
   return response
 }, error => {
