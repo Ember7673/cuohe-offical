@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 09:25:22
- * @LastEditTime: 2020-12-02 23:50:01
+ * @LastEditTime: 2020-12-03 20:26:45
  * @FillPath: Do not edit
 -->
 <template>
@@ -24,8 +24,12 @@
           <div class="info line">
             <p><span>昵称：</span>{{userInfo.nickname}}</p>
             <p><span>手机号：</span>{{userInfo.phone_num}}</p>
-            <p><span>账号身份：</span>{{userInfo.label ==='1' ? '资源提供方': userInfo.label==='2' ? '需求方' : '资源提供方；需求方'}}</p>
+
             <button class="editorNickname btn" @click="nicknameVisible = true;">编辑</button>
+          </div>
+          <div class="line">
+            <p><span>账号身份：</span>{{userInfo.label ==='1' ? '资源提供方': userInfo.label==='2' ? '需求方' : '资源提供方；需求方'}}</p>
+            <button class="btn" @click="labelVisible = true;">编辑</button>
           </div>
           <div class="avatar line">
             <span>选择头像：</span>
@@ -56,14 +60,37 @@
       </span>
     </el-dialog>
     <el-dialog title="修改昵称" :visible.sync="nicknameVisible">
-      <el-input placeholder="请输入昵称" v-model="userInfo.nickname" />
+      <el-input placeholder="请输入昵称" v-model="changeInfo.nickname" />
       <span slot="footer" class="dialog-footer">
         <el-button @click="nicknameVisible = false">取 消</el-button>
         <el-button type="primary" @click="editNickname">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="修改账号身份" :visible.sync="labelVisible" width="550px">
+      <div class="choice">
+        <el-checkbox-group v-model="checkList" @change="onLabelChange">
+          <ul>
+            <li class="left">
+              <img src="../../assets/image/choice1.png" alt="">
+              <p>我有好的项目，希望寻找意向资金</p>
+              <el-checkbox label="1">资源方</el-checkbox>
+            </li>
+            <li class="right">
+              <img src="../../assets/image/choice2.png" alt="">
+              <p>我有充足的资金，希望寻找好的项目</p>
+              <el-checkbox label="2">需求方</el-checkbox>
+            </li>
+          </ul>
+          <div class="box"></div>
+        </el-checkbox-group>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="labelVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editeLabel">确 定</el-button>
+      </span>
+    </el-dialog>
     <el-dialog title="修改行业类型" :visible.sync="industryVisible">
-      <el-select v-model="userInfo.industry" placeholder="请选择">
+      <el-select v-model="changeInfo.industry" placeholder="请选择">
         <el-option v-for="item in industryOptions" :key="item" :value="item">
         </el-option>
       </el-select>
@@ -72,11 +99,14 @@
         <el-button type="primary" @click="editIndustry">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="修改行业类型" :visible.sync="industryVisible">
-      <el-input placeholder="请输入昵称" v-model="userInfo.industry" />
+    <el-dialog title="修改职位" :visible.sync="positionVisible">
+      <el-select v-model="changeInfo.position" placeholder="请选择">
+        <el-option v-for="item in positionOptions" :key="item" :value="item">
+        </el-option>
+      </el-select>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="industryVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editIndustry">确 定</el-button>
+        <el-button @click="positionVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editPosition">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -90,15 +120,19 @@
   import {
     getAvatarListMoudle,
     updateUserInfoMoudle,
-    getIndustryListMoudle
+    getIndustryListMoudle,
+    getPositionListMoudle,
+    getIsLogin
   } from '@/api/login';
   import {
-    uuid
+    uuid,
+    setCookie
   } from "@/utils/index";
   const AVATARURL = 'https://cuohe-1304244764.cos.ap-beijing.myqcloud.com/';
   export default {
     data() {
       return {
+        changeInfo: {},
         userInfo: {},
         requirementLength: 0,
         resourcesLength: 0,
@@ -110,16 +144,38 @@
         nicknameVisible: false,
         industryVisible: false,
         positionVisible: false,
-        industryOptions: []
+        labelVisible: false,
+        industryOptions: [],
+        positionOptions: [],
+        checkList: []
       }
     },
     created() {
-      this.userInfo = JSON.parse(JSON.parse(window.localStorage.getItem('userInfo')));
-      this.getRequirementList('1,2,3,4', 1, 1);
-      this.getResourceList('1,2', 1, 1);
+      this.getUserInfo();
       this.getAvatarList();
+      this.getIndustryList();
+      this.getPositionList();
     },
     methods: {
+      getUserInfo() {
+        getIsLogin({
+          reqid: uuid()
+        }).then(res => {
+          const {
+            status,
+            message,
+            user
+          } = res.data;
+          if (!status) {
+            this.userInfo = user;
+            this.changeInfo = JSON.parse(JSON.stringify(this.userInfo));
+            this.getRequirementList('1,2,3,4', 1, 10);
+            this.getResourceList('1,2', 1, 10);
+          } else {
+            this.$message.error(message);
+          }
+        })
+      },
       getIndustryList() {
         getIndustryListMoudle({
           reqid: uuid()
@@ -136,12 +192,28 @@
           }
         })
       },
+      getPositionList() {
+        getPositionListMoudle({
+          reqid: uuid()
+        }).then(res => {
+          const {
+            status,
+            message,
+            data
+          } = res.data;
+          if (!status) {
+            this.positionOptions = data;
+          } else {
+            this.$message.error(message);
+          }
+        })
+      },
       getRequirementList(status, pageindex, pagesize) {
-        let user_id = this.userInfo.id;
+        console.log(this.userInfo.id)
         getRequirementListMoudle({
           reqid: uuid(),
           status,
-          user_id,
+          user_id: this.userInfo.id,
           pageindex,
           pagesize
         }).then(res => {
@@ -158,11 +230,10 @@
         })
       },
       getResourceList(status, pageindex, pagesize) {
-        let user_id = this.userInfo.id;
         getResourceListMoudle({
           reqid: uuid(),
           status,
-          user_id,
+          user_id: this.userInfo.id,
           pageindex,
           pagesize
         }).then(res => {
@@ -201,6 +272,7 @@
         this.selectedAvatarIndex = index;
       },
       onConfirm() {
+        this.selectedAvatar = this.avatarList[this.selectedAvatarIndex];
         updateUserInfoMoudle({
           reqid: uuid(),
           user_id: this.userInfo.id,
@@ -216,13 +288,18 @@
             data
           } = res.data;
           if (!status) {
-            this.selectedAvatar = this.avatarList[this.selectedAvatarIndex];
+            this.userInfo.avatar = this.selectedAvatar;
             this.dialogVisible = false;
+            setCookie('userInfo', JSON.stringify(this.userInfo));
             this.$message.success('修改成功');
           } else {
             this.$message.error(message);
           }
         })
+      },
+      // 修改账户身份
+      onLabelChange(val) {
+        this.checkList = val;
       },
       editNickname() {
         updateUserInfoMoudle({
@@ -230,6 +307,31 @@
           user_id: this.userInfo.id,
           avatar: this.userInfo.avatar,
           industry: this.userInfo.industry,
+          position: this.userInfo.position,
+          label: this.userInfo.label,
+          nickname: this.changeInfo.nickname
+        }).then(res => {
+          const {
+            status,
+            message,
+            data
+          } = res.data;
+          if (!status) {
+            this.nicknameVisible = false;
+            this.userInfo.nickname = this.changeInfo.nickname;
+            setCookie('userInfo', JSON.stringify(this.userInfo));
+            this.$message.success('修改成功');
+          } else {
+            this.$message.error(message);
+          }
+        })
+      },
+      editIndustry() {
+        updateUserInfoMoudle({
+          reqid: uuid(),
+          user_id: this.userInfo.id,
+          avatar: this.userInfo.avatar,
+          industry: this.changeInfo.industry,
           position: this.userInfo.position,
           label: this.userInfo.label,
           nickname: this.userInfo.nickname
@@ -240,8 +342,74 @@
             data
           } = res.data;
           if (!status) {
-            this.nicknameVisible = false;
+            this.industryVisible = false;
+            setCookie('userInfo', JSON.stringify(this.userInfo));
+            this.userInfo.industry = this.changeInfo.industry;
+            this.userInfo = JSON.parse(JSON.parse(window.localStorage.getItem('userInfo')));
             this.$message.success('修改成功');
+          } else {
+            this.$message.error(message);
+          }
+        })
+      },
+      editPosition() {
+        updateUserInfoMoudle({
+          reqid: uuid(),
+          user_id: this.userInfo.id,
+          avatar: this.userInfo.avatar,
+          industry: this.userInfo.industry,
+          position: this.changeInfo.position,
+          label: this.userInfo.label,
+          nickname: this.userInfo.nickname
+        }).then(res => {
+          const {
+            status,
+            message,
+            data
+          } = res.data;
+          if (!status) {
+            this.positionVisible = false;
+            this.userInfo.position = this.changeInfo.position;
+            setCookie('userInfo', JSON.stringify(this.userInfo));
+            this.$message.success('修改成功');
+          } else {
+            this.$message.error(message);
+          }
+        })
+      },
+      editeLabel() {
+        let label = '';
+        if (this.checkList.length === 2) {
+          label = '1,2';
+        } else if (this.checkList.length === 1) {
+          label = this.checkList[0];
+        } else {
+          this.$message.warning('请选择账户身份');
+          return;
+        }
+        updateUserInfoMoudle({
+          reqid: uuid(),
+          user_id: this.userInfo.id,
+          avatar: this.userInfo.avatar,
+          industry: this.userInfo.industry,
+          position: this.changeInfo.position,
+          label,
+          nickname: this.userInfo.nickname
+        }).then(res => {
+          const {
+            status,
+            message,
+            data
+          } = res.data;
+          if (!status) {
+            this.labelVisible = false;
+            this.userInfo.label = label;
+            setCookie('userInfo', JSON.stringify(this.userInfo));
+            this.$alert(
+              `您的账户身份修改申请已经提交，请您耐心等待审核。审核期间，不可以创建资源和需求，可以浏览已创建资源和需求。同时，为了营造良好的网站环境，对账号重要信息的修改进行次数限制，本次修改 100 天后可以进行再次修改，希望您能理解！`,
+              '已提交申请', {
+                confirmButtonText: '确定'
+              });
           } else {
             this.$message.error(message);
           }
@@ -348,6 +516,7 @@
           padding: 5px 20px;
           border: none;
           outline: none;
+          cursor: pointer;
         }
       }
 
@@ -357,6 +526,8 @@
       }
 
       .avatar {
+        cursor: pointer;
+
         img {
           width: 80px;
           height: 80px;
@@ -393,6 +564,51 @@
           top: 20px;
           left: 12px;
         }
+      }
+    }
+
+    .choice {
+      width: 480px;
+      height: 256px;
+      background: #F5F5F5;
+      border: 2px solid #EEEEEE;
+      border-radius: 5px;
+      margin-top: 20px;
+      position: relative;
+
+      li {
+        width: 50%;
+        float: left;
+        text-align: center;
+        margin: 0 auto;
+        padding-top: 46px;
+
+        img {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+        }
+
+        p {
+          color: #000;
+          margin: 20px 0;
+          font-weight: 400;
+          color: #4C4C4C;
+        }
+
+      }
+
+      /deep/.el-checkbox-group {
+        font-size: 14px;
+      }
+
+      .box {
+        position: absolute;
+        width: 2px;
+        height: 180px;
+        background: #ccc;
+        top: 32px;
+        left: 50%;
       }
     }
   }

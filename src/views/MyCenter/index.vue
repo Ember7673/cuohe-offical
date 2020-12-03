@@ -2,11 +2,11 @@ import { uuid } from '@/utils/index';
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:37:42
- * @LastEditTime: 2020-12-02 23:43:26
+ * @LastEditTime: 2020-12-03 20:35:10
  * @FillPath: Do not edit
 -->
 <template>
-  <div class="myCenter">
+  <div class="myCenter" v-loading="loading">
     <div class="left">
       <div class="l-header">
         <img class="avatar" :src="userInfo.avatar" alt="">
@@ -19,7 +19,7 @@ import { uuid } from '@/utils/index';
             需求
             <p class="fun-title-en">DEMAND</p>
           </div>
-          <div class="fun-number">{{requirementLength}}</div>
+          <div class="fun-number requirement">{{requirementLength}}</div>
         </li>
         <li @click="toResource">
           <div class="fun-title">
@@ -51,7 +51,7 @@ import { uuid } from '@/utils/index';
             <listMoudle :list="requirementList"></listMoudle>
           </el-tab-pane>
         </el-tabs>
-        <button class="create-requirement" @click="clickCreateRequirement">+ 创建资源</button>
+        <button class="create-requirement" @click="clickCreateRequirement">+ 创建需求</button>
       </div>
 
       <el-dialog title="提示" :visible.sync="createRequirementVisible" width="500px">
@@ -143,6 +143,7 @@ import { uuid } from '@/utils/index';
         },
         createSuccessVisible: false,
         pagestatus: '1', // 当前需求列表状态
+        loading: true
       }
     },
     created() {
@@ -214,6 +215,7 @@ import { uuid } from '@/utils/index';
           } = res.data;
           if (!status) {
             this.resourcesLength = data.size;
+            this.loading = false;
           } else {
             this.$message.error(message);
           }
@@ -466,6 +468,10 @@ import { uuid } from '@/utils/index';
           border: 1px solid #ccc;
           border-radius: 50%;
           text-align: center;
+        }
+
+        .requirement {
+          border-color: #F7941D;
         }
       }
 

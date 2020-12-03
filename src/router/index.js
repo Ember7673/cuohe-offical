@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:28:16
- * @LastEditTime: 2020-12-02 23:52:15
+ * @LastEditTime: 2020-12-03 19:28:35
  * @FillPath: Do not edit
  */
 
@@ -16,6 +16,7 @@ import MyCenter from '@/views/MyCenter/index';
 import Settings from '@/views/MyCenter/settings';
 import Resource from '@/views/MyCenter/resource';
 import Invitecode from '@/views/MyCenter/inviteCode'
+import Contactus from '@/views/MyCenter/contactUs'
 
 const routes = [
   {
@@ -60,6 +61,10 @@ const routes = [
   {
     path: '/invitecode',
     component: Invitecode
+  },
+  {
+    path: '/contactus',
+    component: Contactus
   },
 
 ]

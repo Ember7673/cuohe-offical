@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-23 23:35:40
- * @LastEditTime: 2020-11-24 00:26:27
+ * @LastEditTime: 2020-12-03 19:07:35
  * @FillPath: Do not edit
 -->
 <template>
@@ -23,12 +23,12 @@
             <li class="left">
               <img src="../../assets/image/choice1.png" alt="">
               <p>我有好的项目，希望寻找意向资金</p>
-              <el-checkbox label="1">需求方</el-checkbox>
+              <el-checkbox label="1">资源方</el-checkbox>
             </li>
             <li class="right">
               <img src="../../assets/image/choice2.png" alt="">
               <p>我有充足的资金，希望寻找好的项目</p>
-              <el-checkbox label="2">资源方</el-checkbox>
+              <el-checkbox label="2">需求方</el-checkbox>
             </li>
           </ul>
           <div class="box"></div>

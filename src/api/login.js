@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:55:23
- * @LastEditTime: 2020-12-02 20:36:52
+ * @LastEditTime: 2020-12-03 19:33:23
  * @FillPath: Do not edit
  */
 import $http from '@/config/http';
@@ -95,5 +95,11 @@ export const resetPasswordMoudle = (params) => {
 // 更新个人信息
 export const updateUserInfoMoudle = (params) => {
   let requestUrl = '/update-user-info';
+  return $http.post(requestUrl, params)
+}
+
+// 客服电话
+export const customerServicePhoneNumMoudle = (params) => {
+  let requestUrl = '/customer-service-phone-num';
   return $http.post(requestUrl, params)
 }

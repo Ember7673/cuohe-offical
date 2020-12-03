@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-20 19:45:15
- * @LastEditTime: 2020-12-02 09:26:59
+ * @LastEditTime: 2020-12-03 19:28:42
  * @FillPath: Do not edit
 -->
 <template>
@@ -28,12 +28,22 @@
             <el-dropdown-menu slot="dropdown">
               <router-link to="/mycenter">
                 <el-dropdown-item>
-                  个人中心
+                  我的需求
+                </el-dropdown-item>
+              </router-link>
+              <router-link to="/resource">
+                <el-dropdown-item>
+                  我的资源
                 </el-dropdown-item>
               </router-link>
               <router-link to="/settings">
                 <el-dropdown-item>
                   账号设置
+                </el-dropdown-item>
+              </router-link>
+              <router-link to="/contactus">
+                <el-dropdown-item>
+                  联系我们
                 </el-dropdown-item>
               </router-link>
               <span @click="onLogout">
