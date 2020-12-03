@@ -1,11 +1,13 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:53:29
- * @LastEditTime: 2020-11-21 17:53:11
+ * @LastEditTime: 2020-12-02 08:52:07
  * @FillPath: Do not edit
  */
 import axios from 'axios'
 import { Message } from "element-ui"
+import Vue from 'vue';
+const vm = Vue.prototype;
 
 const config = {
   baseURL: '/official/api/',
@@ -28,6 +30,11 @@ service.interceptors.request.use(config => {
 })
 
 service.interceptors.response.use(response => {
+  const status = response.data.status;
+  if (status === 100) {
+    vm.$auth.removeUserInfo();
+    vm.$SignIn();
+  }
   return response
 }, error => {
   // LoadingInstance.close()

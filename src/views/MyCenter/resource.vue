@@ -2,7 +2,7 @@ import { uuid } from '@/utils/index';
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:37:42
- * @LastEditTime: 2020-12-02 23:43:26
+ * @LastEditTime: 2020-12-02 23:35:42
  * @FillPath: Do not edit
 -->
 <template>
@@ -33,44 +33,38 @@ import { uuid } from '@/utils/index';
     <div class="right">
       <div class="r-menu">
         <el-tabs v-model="activeName" @tab-click="handleTabsClick">
-          <el-tab-pane label="全部" name="1,2,3,4">
-            <listMoudle :list="requirementList" :size="requirementLength" :pageindex="pageindex"
-              @pageChange="pageChange"></listMoudle>
+          <el-tab-pane label="全部" name="1,2">
+            <listMoudle :list="resourcesList" :size="resourcesLength" @pageChange="pageChange"></listMoudle>
           </el-tab-pane>
           <el-tab-pane label="已提交" name="1">
-            <listMoudle :list="requirementList" :size="requirementLength" :pageindex="pageindex"
-              @pageChange="pageChange"></listMoudle>
+            <listMoudle :list="resourcesList" :size="resourcesLength" @pageChange="pageChange"></listMoudle>
           </el-tab-pane>
-          <el-tab-pane label="已审核" name="2" :size="requirementLength" :pageindex="pageindex" @pageChange="pageChange">
-            <listMoudle :list="requirementList"></listMoudle>
-          </el-tab-pane>
-          <el-tab-pane label="已对接" name="3" :size="requirementLength" :pageindex="pageindex" @pageChange="pageChange">
-            <listMoudle :list="requirementList"></listMoudle>
-          </el-tab-pane>
-          <el-tab-pane label="已完成" name="4" :size="requirementLength" :pageindex="pageindex" @pageChange="pageChange">
-            <listMoudle :list="requirementList"></listMoudle>
+          <el-tab-pane label="已审核" name="2" :size="resourcesLength" @pageChange="pageChange">
+            <listMoudle :list="resourcesList"></listMoudle>
           </el-tab-pane>
         </el-tabs>
-        <button class="create-requirement" @click="clickCreateRequirement">+ 创建资源</button>
+        <button class="create-requirement" @click="clickCreateRequirement">+ 创建需求</button>
       </div>
 
       <el-dialog title="提示" :visible.sync="createRequirementVisible" width="500px">
         <div>
-          <el-form :model="createRequirementForm" :rules="rules" ref="createRequirementForm" label-width="100px"
+          <el-form :model="createResourceForm" :rules="rules" ref="createResourceForm" label-width="100px"
             class="demo-ruleForm">
             <el-form-item prop="name" label="项目名称">
-              <el-input placeholder="请输入项目名称" v-model="createRequirementForm.name">
+              <el-input placeholder="请输入项目名称" v-model="createResourceForm.name">
               </el-input>
             </el-form-item>
             <el-form-item prop="description" label="需求介绍">
-              <el-input type="textarea" placeholder="请详细描述需求" v-model="createRequirementForm.description">
+              <el-input type="textarea" placeholder="请详细描述需求" v-model="createResourceForm.description">
               </el-input>
             </el-form-item>
-            <el-form-item label="合作方式" prop="cooperation_method">
-              <el-select v-model="createRequirementForm.cooperation_method" placeholder="请选择">
-                <el-option value="线上"></el-option>
-                <el-option value="线下"></el-option>
+            <el-form-item label="合作方式" prop="resource_type">
+              <el-select v-model="createResourceForm.resource_type" placeholder="请选择合作方式">
+                <el-option value="现金"></el-option>
               </el-select>
+            </el-form-item>
+            <el-form-item label="合作领域" prop="area">
+              <el-input placeholder="请输入合作领域" v-model="createResourceForm.area" />
             </el-form-item>
             <el-form-item label="附件">
               <input type="file" multiple="multiple" @change.self="onUploadFile" />
@@ -78,13 +72,13 @@ import { uuid } from '@/utils/index';
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
-          <button class="createRequiremenBtn" @click="onCreateRequirement">创建</button>
+          <button class="createRequiremenBtn" @click="onCreateResource">创建</button>
         </span>
       </el-dialog>
       <el-dialog title="创建成功" :visible.sync="createSuccessVisible" width="500px" show-close>
         <div class="createSuccess">
           <img src="../../assets/image/resetPassword.png" alt="">
-          <p>您的需求申请已经创建成功，我们会尽快审核，请您耐心等待！
+          <p>您的资源已经创建成功，我们会尽快审核，请您耐心等待！
             审核结果会以短信的形式通知，请您敬请期待</p>
         </div>
       </el-dialog>
@@ -97,7 +91,7 @@ import { uuid } from '@/utils/index';
     getRequirementListMoudle,
     getResourceListMoudle,
     getCosToken,
-    createRequirementMoudle
+    createResourceMoudle
   } from '@/api/myCenter';
   import {
     uuid
@@ -111,18 +105,19 @@ import { uuid } from '@/utils/index';
       return {
         userInfo: {},
         activeIndex: '1',
-        requirementList: [],
         requirementLength: 0,
+        resourcesList: [],
         resourcesLength: 0,
-        activeName: '1,2,3,4',
+        activeName: '1,2',
         createRequirementVisible: false,
-        createRequirementForm: {
+        createResourceForm: {
           name: '',
           description: '',
           pic_annex: [],
           video_annex: [],
           file_annex: [],
-          cooperation_method: ''
+          resource_type: '',
+          area: ''
         },
         rules: {
           name: [{
@@ -135,9 +130,14 @@ import { uuid } from '@/utils/index';
             message: "请输入项目描述",
             trigger: "blur"
           }],
-          cooperation_method: [{
+          resource_type: [{
             required: true,
             message: "请选择合作方式",
+            trigger: "blur"
+          }],
+          area: [{
+            required: true,
+            message: "请选择合作领域",
             trigger: "blur"
           }],
         },
@@ -158,7 +158,7 @@ import { uuid } from '@/utils/index';
         this.$router.push('/resource');
       },
       pageChange(pageindex) {
-        this.getRequirementList(this.pagestatus, pageindex)
+        this.getResourceList(this.pagestatus, pageindex)
       },
       getRequirementList(status, pageindex, pagesize = 10) {
         let user_id = this.userInfo.id;
@@ -175,23 +175,6 @@ import { uuid } from '@/utils/index';
             message
           } = res.data;
           if (!status) {
-            this.requirementList = data.meets;
-            this.requirementList.forEach(item => {
-              switch (item.status) {
-                case 1:
-                  item.statusBtn = '已提交';
-                  break;
-                case 2:
-                  item.statusBtn = '已审核';
-                  break;
-                case 3:
-                  item.statusBtn = '已对接';
-                  break;
-                case 4:
-                  item.statusBtn = '已完成';
-                  break;
-              }
-            })
             this.requirementLength = data.size;
           } else {
             this.$message.error(message);
@@ -214,25 +197,37 @@ import { uuid } from '@/utils/index';
           } = res.data;
           if (!status) {
             this.resourcesLength = data.size;
+            this.resourcesList = data.meets;
+            this.resourcesList.forEach(item => {
+              switch (item.status) {
+                case 1:
+                  item.statusBtn = '已提交';
+                  break;
+                case 2:
+                  item.statusBtn = '已审核';
+                  break;
+              }
+            })
           } else {
             this.$message.error(message);
           }
         })
       },
       handleTabsClick(tab) {
-        this.getRequirementList(tab.name, 1, 10)
+        this.getResourceList(tab.name, 1, 10)
         this.pagestatus = tab.name;
       },
       // 点击创建需求
       clickCreateRequirement() {
         this.createRequirementVisible = true;
-        this.createRequirementForm = {
+        this.createResourceForm = {
           name: '',
           description: '',
           pic_annex: [],
           video_annex: [],
           file_annex: [],
-          cooperation_method: ''
+          resource_type: '',
+          area: ''
         };
       },
       //  上传附件
@@ -264,17 +259,17 @@ import { uuid } from '@/utils/index';
         })
         let type = this.matchType(files.name);
         if (type === 'image') {
-          this.createRequirementForm.pic_annex.push({
+          this.createResourceForm.pic_annex.push({
             name: files.name,
             download_name: file_name
           })
         } else if (type === 'video') {
-          this.createRequirementForm.video_annex.push({
+          this.createResourceForm.video_annex.push({
             name: files.name,
             download_name: file_name
           })
         } else {
-          this.createRequirementForm.file_annex.push({
+          this.createResourceForm.file_annex.push({
             name: files.name,
             download_name: file_name
           })
@@ -373,9 +368,9 @@ import { uuid } from '@/utils/index';
         result = 'file';
         return result;
       },
-      onCreateRequirement() {
-        createRequirementMoudle({
-          ...this.createRequirementForm,
+      onCreateResource() {
+        createResourceMoudle({
+          ...this.createResourceForm,
           user_id: this.userInfo.id,
           reqid: uuid()
         }).then(res => {
@@ -384,11 +379,10 @@ import { uuid } from '@/utils/index';
             message
           } = res.data;
           if (!status) {
-            this.$message.success("创建需求成功");
+            this.$message.success("创建资源成功");
             this.createRequirementVisible = false;
             this.createSuccessVisible = true;
-            this.getRequirementList(this.pagestatus, this.pageindex)
-            this.pageindex = 1;
+            this.getResourceList(this.pagestatus, 1)
           } else {
             this.$message.error(message);
           }

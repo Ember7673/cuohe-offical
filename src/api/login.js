@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:55:23
- * @LastEditTime: 2020-11-26 22:08:00
+ * @LastEditTime: 2020-12-02 20:36:52
  * @FillPath: Do not edit
  */
 import $http from '@/config/http';
@@ -89,5 +89,11 @@ export const checkValidCodeMoudle = (params) => {
 // 重置密码
 export const resetPasswordMoudle = (params) => {
   let requestUrl = '/reset-password';
+  return $http.post(requestUrl, params)
+}
+
+// 更新个人信息
+export const updateUserInfoMoudle = (params) => {
+  let requestUrl = '/update-user-info';
   return $http.post(requestUrl, params)
 }

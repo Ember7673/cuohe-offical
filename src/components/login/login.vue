@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-15 17:20:34
- * @LastEditTime: 2020-11-26 22:29:14
+ * @LastEditTime: 2020-12-02 08:55:44
  * @FillPath: Do not edit
 -->
 <template>
@@ -178,7 +178,7 @@
                 this.$auth.close();
                 store.commit('auth/getUserInfo', JSON.stringify(user))
                 store.commit('auth/getAvatar', user.avatar)
-
+                location.reload();
                 this.$message.success('登录成功');
               } else if (status === 7009) {
                 this.$message.error('用户账号不存在');
@@ -211,6 +211,7 @@
                 this.$auth.close();
                 store.commit('auth/getUserInfo', JSON.stringify(user))
                 store.commit('auth/getAvatar', user.avatar)
+                location.reload();
                 this.$message.success('登录成功');
               } else if (status === 7009) {
                 this.$message.error('用户不存在，请先注册账号');

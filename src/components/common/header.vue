@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-20 19:45:15
- * @LastEditTime: 2020-11-27 11:22:05
+ * @LastEditTime: 2020-12-02 09:26:59
  * @FillPath: Do not edit
 -->
 <template>
@@ -29,6 +29,11 @@
               <router-link to="/mycenter">
                 <el-dropdown-item>
                   个人中心
+                </el-dropdown-item>
+              </router-link>
+              <router-link to="/settings">
+                <el-dropdown-item>
+                  账号设置
                 </el-dropdown-item>
               </router-link>
               <span @click="onLogout">
@@ -88,7 +93,7 @@
       }
     },
     mounted() {
-      this.avatar = window.localStorage.getItem('avatar');
+      this.avatar = window.localStorage.getItem('avatar').replace(/\"/g, "");
     },
     methods: {
       isLogin() {

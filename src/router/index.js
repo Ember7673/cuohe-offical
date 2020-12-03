@@ -1,18 +1,21 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:28:16
- * @LastEditTime: 2020-11-26 22:16:47
+ * @LastEditTime: 2020-12-02 23:52:15
  * @FillPath: Do not edit
  */
 
 import Index from '@/views/Index/index';
-import MyCenter from '@/views/MyCenter/index';
 import IdVerify from '@/views/Userinfo/IdVerify';
 import Choose from '@/views/Userinfo/choose';
 import PersonInfo from '@/views/Userinfo/personalInfo';
 import Done from '@/views/Userinfo/done';
 import ResetPassword from '@/views/Userinfo/password';
 import ResetPasswordSuccess from '@/views/Userinfo/resetPasswordSuccess';
+import MyCenter from '@/views/MyCenter/index';
+import Settings from '@/views/MyCenter/settings';
+import Resource from '@/views/MyCenter/resource';
+import Invitecode from '@/views/MyCenter/inviteCode'
 
 const routes = [
   {
@@ -45,6 +48,19 @@ const routes = [
   {
     path: '/resetPasswordSuccess',
     component: ResetPasswordSuccess
-  }
+  },
+  {
+    path: '/settings',
+    component: Settings
+  },
+  {
+    path: '/resource',
+    component: Resource
+  },
+  {
+    path: '/invitecode',
+    component: Invitecode
+  },
+
 ]
 export default routes;
