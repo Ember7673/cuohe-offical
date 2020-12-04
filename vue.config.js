@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-12 17:00:11
- * @LastEditTime: 2020-12-04 09:20:33
+ * @LastEditTime: 2020-12-04 09:42:20
  * @FillPath: Do not edit
  */
 const path = require('path');
@@ -18,6 +18,7 @@ module.exports = {
     host: 'test.cuohe.com',
     port: 8081,
     public: process.env.VUE_APP_PUBLIC_URL,
+    publicPath: './',
     disableHostCheck: true,
     open: true,
     overlay: {
