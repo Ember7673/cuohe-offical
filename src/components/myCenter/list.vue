@@ -1,14 +1,14 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 19:34:53
- * @LastEditTime: 2020-12-02 23:41:55
+ * @LastEditTime: 2020-12-03 22:19:15
  * @FillPath: Do not edit
 -->
 <template>
   <div class="content">
     <div v-show="list.length">
       <ul>
-        <li v-for="(item, index) in list" :key="index">
+        <li v-for="(item, index) in list" :key="index" @click="clickList(index)">
           <div class="r-content-header">
             <p class="title">{{item.name}}</p>
             <button class="r-content-btn">{{item.statusBtn}}</button>
@@ -26,6 +26,8 @@
       </el-pagination>
     </div>
 
+
+
     <div v-show="!list.length" class="empty">
       <img src="../../assets/image/empty.png" alt="">
     </div>
@@ -38,6 +40,9 @@
     methods: {
       currentChange(index) {
         this.$emit('pageChange', index);
+      },
+      clickList(index) {
+
       }
     }
   }

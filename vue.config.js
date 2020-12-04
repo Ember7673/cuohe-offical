@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-12 17:00:11
- * @LastEditTime: 2020-11-21 22:31:18
+ * @LastEditTime: 2020-12-04 09:20:33
  * @FillPath: Do not edit
  */
 const path = require('path');
@@ -26,7 +26,7 @@ module.exports = {
     },
     proxy: {
       '/api/': {
-        target: 'http://124.156.212.27:60010',
+        target: 'http://www.zhongxin.pro',
         changeOrigin: true
       }
     }
