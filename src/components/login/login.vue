@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-15 17:20:34
- * @LastEditTime: 2020-12-02 08:55:44
+ * @LastEditTime: 2020-12-04 17:12:10
  * @FillPath: Do not edit
 -->
 <template>
@@ -53,7 +53,12 @@
         <button v-show="!isShowPassword" @click="onSMSLogin">登录</button>
       </div>
 
-      <p class="toRegister" @click="$Register">立即注册</p>
+      <div class="toRegister">
+        <span @click="$Register">立即注册</span>
+        <span class="resetPassword" @click="resetPassword">忘记密码</span>
+      </div>
+
+
     </div>
 
   </div>
@@ -124,6 +129,9 @@
       window.removeEventListener('keydown', this.handleKeyDown, true);
     },
     methods: {
+      resetPassword() {
+        window.location.href = '/#/resetPassword';
+      },
       //获取短信验证码
       getSMSCode() {
         const me = this;
@@ -349,6 +357,10 @@
         margin-top: 10px;
         cursor: pointer;
         color: #373737;
+      }
+
+      .resetPassword {
+        padding-left: 20px;
       }
     }
   }

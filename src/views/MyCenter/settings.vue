@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 09:25:22
- * @LastEditTime: 2020-12-03 20:26:45
+ * @LastEditTime: 2020-12-05 09:29:13
  * @FillPath: Do not edit
 -->
 <template>
@@ -60,7 +60,8 @@
       </span>
     </el-dialog>
     <el-dialog title="修改昵称" :visible.sync="nicknameVisible">
-      <el-input placeholder="请输入昵称" v-model="changeInfo.nickname" />
+      <el-input placeholder="请输入昵称" v-model="changeInfo.nickname" @input="nicknameChange" />
+      <span v-show="nicknameExit" class="nicknameExit">昵称已存在</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="nicknameVisible = false">取 消</el-button>
         <el-button type="primary" @click="editNickname">确 定</el-button>
@@ -122,11 +123,13 @@
     updateUserInfoMoudle,
     getIndustryListMoudle,
     getPositionListMoudle,
-    getIsLogin
+    getIsLogin,
+    checkNnickNameExistMoudle
   } from '@/api/login';
   import {
     uuid,
-    setCookie
+    setCookie,
+    throttle
   } from "@/utils/index";
   const AVATARURL = 'https://cuohe-1304244764.cos.ap-beijing.myqcloud.com/';
   export default {
@@ -147,7 +150,8 @@
         labelVisible: false,
         industryOptions: [],
         positionOptions: [],
-        checkList: []
+        checkList: [],
+        nicknameExit: false
       }
     },
     created() {
@@ -290,6 +294,10 @@
           if (!status) {
             this.userInfo.avatar = this.selectedAvatar;
             this.dialogVisible = false;
+            // setCookie('userInfo', JSON.stringify(this.userInfo));
+            this.$auth.removeUserInfo();
+            this.$store.commit('auth/getUserInfo', JSON.stringify(this.userInfo))
+            this.$store.commit('auth/getAvatar', this.selectedAvatar)
             setCookie('userInfo', JSON.stringify(this.userInfo));
             this.$message.success('修改成功');
           } else {
@@ -301,7 +309,30 @@
       onLabelChange(val) {
         this.checkList = val;
       },
+      checkNnickNameExist(nick_name) {
+        throttle(
+          checkNnickNameExistMoudle({
+            reqid: uuid(),
+            nick_name
+          }).then(res => {
+            const {
+              status,
+              message,
+              exist
+            } = res.data;
+            if (!status) {
+              this.nicknameExit = exist;
+            } else {
+              this.$message.error(message);
+            }
+          }), 2000)
+      },
+      nicknameChange(val) {
+        if (!val) return;
+        this.checkNnickNameExist(val)
+      },
       editNickname() {
+        if (this.nicknameExit) return;
         updateUserInfoMoudle({
           reqid: uuid(),
           user_id: this.userInfo.id,
@@ -610,6 +641,12 @@
         top: 32px;
         left: 50%;
       }
+    }
+
+    .nicknameExit {
+      color: red;
+      padding-top: 10px;
+      display: inline-block;
     }
   }
 </style>

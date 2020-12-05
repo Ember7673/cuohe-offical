@@ -2,7 +2,7 @@ import { uuid } from '@/utils/index';
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:37:42
- * @LastEditTime: 2020-12-03 21:17:31
+ * @LastEditTime: 2020-12-05 19:02:36
  * @FillPath: Do not edit
 -->
 <template>
@@ -26,7 +26,7 @@ import { uuid } from '@/utils/index';
             资源
             <p class="fun-title-en">RESOURCES</p>
           </div>
-          <div class="fun-number resource">{{resourcesLength}}</div>
+          <div class="fun-number requirement">{{resourcesLength}}</div>
         </li>
       </ul>
     </div>
@@ -34,28 +34,30 @@ import { uuid } from '@/utils/index';
       <div class="r-menu">
         <el-tabs v-model="activeName" @tab-click="handleTabsClick">
           <el-tab-pane label="全部" name="1,2">
-            <listMoudle :list="resourcesList" :size="resourcesLength" @pageChange="pageChange"></listMoudle>
+            <listMoudle :list="resourcesList" :size="resourcesLength" @pageChange="pageChange"
+              @refreshList="refreshList"></listMoudle>
           </el-tab-pane>
           <el-tab-pane label="已提交" name="1">
-            <listMoudle :list="resourcesList" :size="resourcesLength" @pageChange="pageChange"></listMoudle>
+            <listMoudle :list="resourcesList" :size="resourcesLength" @pageChange="pageChange"
+              @refreshList="refreshList"></listMoudle>
           </el-tab-pane>
-          <el-tab-pane label="已审核" name="2" :size="resourcesLength" @pageChange="pageChange">
+          <el-tab-pane label="已审核" name="2" :size="resourcesLength" @pageChange="pageChange" @refreshList="refreshList">
             <listMoudle :list="resourcesList"></listMoudle>
           </el-tab-pane>
         </el-tabs>
         <button class="create-requirement" @click="clickCreateRequirement">+ 创建资源</button>
       </div>
 
-      <el-dialog title="提示" :visible.sync="createRequirementVisible" width="500px">
+      <el-dialog title="创建资源" :visible.sync="createRequirementVisible" width="800px">
         <div>
           <el-form :model="createResourceForm" :rules="rules" ref="createResourceForm" label-width="100px"
             class="demo-ruleForm">
-            <el-form-item prop="name" label="项目名称">
-              <el-input placeholder="请输入项目名称" v-model="createResourceForm.name">
+            <el-form-item prop="name" label="资源名称">
+              <el-input placeholder="请输入资源名称" v-model="createResourceForm.name">
               </el-input>
             </el-form-item>
-            <el-form-item prop="description" label="需求介绍">
-              <el-input type="textarea" placeholder="请详细描述需求" v-model="createResourceForm.description">
+            <el-form-item prop="description" label="资源介绍">
+              <el-input type="textarea" :rows="7" placeholder="请详细描述资源" v-model="createResourceForm.description">
               </el-input>
             </el-form-item>
             <el-form-item label="合作方式" prop="resource_type">
@@ -68,11 +70,17 @@ import { uuid } from '@/utils/index';
             </el-form-item>
             <el-form-item label="附件">
               <input type="file" multiple="multiple" @change.self="onUploadFile" />
+              <ul>
+                <li v-for="(file, index) in filesList" :key="index">
+                  <span>{{file.name}}</span>
+                  <button @click="removeFile(file, index)">删除</button>
+                </li>
+              </ul>
             </el-form-item>
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
-          <button class="createRequiremenBtn" @click="onCreateResource">创建</button>
+          <button class="createRequiremenBtn" @click="onCreateRequirement">创建</button>
         </span>
       </el-dialog>
       <el-dialog title="创建成功" :visible.sync="createSuccessVisible" width="500px" show-close>
@@ -99,7 +107,7 @@ import { uuid } from '@/utils/index';
   import {
     uuid
   } from "@/utils/index";
-  import listMoudle from '@/components/myCenter/list';
+  import listMoudle from '@/components/myCenter/resourceList';
   export default {
     components: {
       listMoudle
@@ -108,8 +116,8 @@ import { uuid } from '@/utils/index';
       return {
         userInfo: {},
         activeIndex: '1',
-        requirementLength: 0,
         resourcesList: [],
+        requirementLength: 0,
         resourcesLength: 0,
         activeName: '1,2',
         createRequirementVisible: false,
@@ -119,8 +127,7 @@ import { uuid } from '@/utils/index';
           pic_annex: [],
           video_annex: [],
           file_annex: [],
-          resource_type: '',
-          area: ''
+          cooperation_method: ''
         },
         rules: {
           name: [{
@@ -146,7 +153,9 @@ import { uuid } from '@/utils/index';
         },
         createSuccessVisible: false,
         pagestatus: '1', // 当前需求列表状态
-        loading: true
+        loading: true,
+        filesList: [], //上传文件列表
+        pageindex: 1,
       }
     },
     created() {
@@ -179,6 +188,9 @@ import { uuid } from '@/utils/index';
       },
       pageChange(pageindex) {
         this.getResourceList(this.pagestatus, pageindex)
+      },
+      refreshList() {
+        this.getResourceList(this.pagestatus, this.pageindex)
       },
       getRequirementList(status, pageindex, pagesize = 10) {
         let user_id = this.userInfo.id;
@@ -251,12 +263,39 @@ import { uuid } from '@/utils/index';
           area: ''
         };
       },
+      // 创建需求中删除附件
+      removeFile(file, index) {
+        let me = this;
+        me.$alert(`确定删除 ${ file.name }？`, {
+          confirmButtonText: '确定',
+          callback: action => {
+            console.log('v', me.filesList)
+            me.filesList.splice(index, 1);
+            me.createResourceForm.pic_annex.splice(index, 1);
+          }
+        });
+      },
       //  上传附件
-      async onUploadFile() {
-        const files = event.target.files[0];
+      async onUploadFile(event) {
+        this.filesList = [];
+        const files = event.target.files;
+        files.forEach(file => {
+          this.filesList.push(file)
+          this.uploadFileFn(file)
+        })
+      },
+      getType(file) {
+        var filename = file;
+        var index1 = filename.lastIndexOf(".");
+        var index2 = filename.length;
+        var type = filename.substring(index1, index2);
+        return type;
+      },
+      async uploadFileFn(files) {
         const reqid = uuid();
-        const suffix = files.name.split('.')[1];
-        const file_name = reqid + '.' + suffix;
+        const suffix = this.getType(files.name);
+        console.log('suffix', suffix)
+        let file_name = reqid + suffix;
         await getCosToken({
           reqid,
           method: 1,
@@ -278,118 +317,12 @@ import { uuid } from '@/utils/index';
             this.$message.error(e)
           })
         })
-        let type = this.matchType(files.name);
-        if (type === 'image') {
-          this.createResourceForm.pic_annex.push({
-            name: files.name,
-            download_name: file_name
-          })
-        } else if (type === 'video') {
-          this.createResourceForm.video_annex.push({
-            name: files.name,
-            download_name: file_name
-          })
-        } else {
-          this.createResourceForm.file_annex.push({
-            name: files.name,
-            download_name: file_name
-          })
-        }
+        this.createResourceForm.pic_annex.push({
+          name: files.name,
+          download_name: file_name
+        })
       },
-      matchType(fileName) {
-        // 后缀获取
-        var suffix = '';
-        // 获取类型结果
-        var result = '';
-        try {
-          var flieArr = fileName.split('.');
-          suffix = flieArr[flieArr.length - 1];
-        } catch (err) {
-          suffix = '';
-        }
-        // fileName无后缀返回 false
-        if (!suffix) {
-          result = false;
-          return result;
-        }
-        // 图片格式
-        var imglist = ['png', 'jpg', 'jpeg', 'bmp', 'gif'];
-        // 进行图片匹配
-        result = imglist.some(function (item) {
-          return item == suffix;
-        });
-        if (result) {
-          result = 'image';
-          return result;
-        };
-        // 匹配txt
-        var txtlist = ['txt'];
-        result = txtlist.some(function (item) {
-          return item == suffix;
-        });
-        if (result) {
-          result = 'file';
-          return result;
-        };
-        // 匹配 excel
-        var excelist = ['xls', 'xlsx'];
-        result = excelist.some(function (item) {
-          return item == suffix;
-        });
-        if (result) {
-          result = 'file';
-          return result;
-        };
-        // 匹配 word
-        var wordlist = ['doc', 'docx'];
-        result = wordlist.some(function (item) {
-          return item == suffix;
-        });
-        if (result) {
-          result = 'file';
-          return result;
-        };
-        // 匹配 pdf
-        var pdflist = ['pdf'];
-        result = pdflist.some(function (item) {
-          return item == suffix;
-        });
-        if (result) {
-          result = 'file';
-          return result;
-        };
-        // 匹配 ppt
-        var pptlist = ['ppt'];
-        result = pptlist.some(function (item) {
-          return item == suffix;
-        });
-        if (result) {
-          result = 'file';
-          return result;
-        };
-        // 匹配 视频
-        var videolist = ['mp4', 'm2v', 'mkv'];
-        result = videolist.some(function (item) {
-          return item == suffix;
-        });
-        if (result) {
-          result = 'video';
-          return result;
-        };
-        // 匹配 音频
-        var radiolist = ['mp3', 'wav', 'wmv'];
-        result = radiolist.some(function (item) {
-          return item == suffix;
-        });
-        if (result) {
-          result = 'video';
-          return result;
-        }
-        // 其他 文件类型
-        result = 'file';
-        return result;
-      },
-      onCreateResource() {
+      onCreateRequirement() {
         createResourceMoudle({
           ...this.createResourceForm,
           user_id: this.userInfo.id,
@@ -483,7 +416,7 @@ import { uuid } from '@/utils/index';
           text-align: center;
         }
 
-        .resource {
+        .requirement {
           border-color: #F7941D;
         }
       }

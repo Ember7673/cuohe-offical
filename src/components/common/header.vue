@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-20 19:45:15
- * @LastEditTime: 2020-12-03 19:28:42
+ * @LastEditTime: 2020-12-06 00:38:50
  * @FillPath: Do not edit
 -->
 <template>
@@ -25,29 +25,34 @@
               <img :src="curAvatar ? curAvatar : this.avatar" alt="">
               <!-- <p>{{isLogged && curUserInfo.phone_num}}</p> -->
             </span>
-            <el-dropdown-menu slot="dropdown">
+            <el-dropdown-menu slot="dropdown" style="width:'500px'; color:#F7941D;">
               <router-link to="/mycenter">
                 <el-dropdown-item>
                   我的需求
                 </el-dropdown-item>
               </router-link>
               <router-link to="/resource">
-                <el-dropdown-item>
+                <el-dropdown-item divided>
                   我的资源
                 </el-dropdown-item>
               </router-link>
+              <router-link to="/invitecode">
+                <el-dropdown-item divided>
+                  邀请码
+                </el-dropdown-item>
+              </router-link>
               <router-link to="/settings">
-                <el-dropdown-item>
+                <el-dropdown-item divided>
                   账号设置
                 </el-dropdown-item>
               </router-link>
               <router-link to="/contactus">
-                <el-dropdown-item>
+                <el-dropdown-item divided>
                   联系我们
                 </el-dropdown-item>
               </router-link>
               <span @click="onLogout">
-                <el-dropdown-item>退出登录</el-dropdown-item>
+                <el-dropdown-item divided>退出登录</el-dropdown-item>
               </span>
             </el-dropdown-menu>
           </el-dropdown>
@@ -78,6 +83,7 @@
       return {
         isLogged: false,
         avatar: '',
+        userInfo: {}
       }
     },
     computed: {
@@ -117,6 +123,8 @@
           } = res.data;
           if (!status) {
             this.isLogged = true;
+            this.userInfo = user;
+            this.curAvatar = user.avatar;
             this.$auth.removeUserInfo();
             store.commit('auth/getUserInfo', JSON.stringify(user))
             store.commit('auth/getAvatar', user.avatar)
@@ -194,25 +202,7 @@
             border-radius: 50%;
           }
 
-          .loggedPanel {
-            width: 100px;
-            position: absolute;
-            top: 65px;
-            left: 0;
-            background: #fff;
-            padding: 10px;
-            z-index: 2;
-            border: 1px solid #ebeef5;
-            border-radius: 4px;
-            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
-            li {
-              height: 30px;
-              line-height: 30px;
-              font-size: 14px;
-              color: #606266;
-            }
-          }
         }
       }
     }

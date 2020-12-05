@@ -2,7 +2,7 @@ import { uuid } from '@/utils/index';
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:37:42
- * @LastEditTime: 2020-12-03 21:17:39
+ * @LastEditTime: 2020-12-06 00:12:46
  * @FillPath: Do not edit
 -->
 <template>
@@ -35,35 +35,38 @@ import { uuid } from '@/utils/index';
         <el-tabs v-model="activeName" @tab-click="handleTabsClick">
           <el-tab-pane label="全部" name="1,2,3,4">
             <listMoudle :list="requirementList" :size="requirementLength" :pageindex="pageindex"
-              @pageChange="pageChange"></listMoudle>
+              @pageChange="pageChange" @refreshList="refreshList"></listMoudle>
           </el-tab-pane>
           <el-tab-pane label="已提交" name="1">
             <listMoudle :list="requirementList" :size="requirementLength" :pageindex="pageindex"
-              @pageChange="pageChange"></listMoudle>
+              @pageChange="pageChange" @refreshList="refreshList"></listMoudle>
           </el-tab-pane>
-          <el-tab-pane label="已审核" name="2" :size="requirementLength" :pageindex="pageindex" @pageChange="pageChange">
+          <el-tab-pane label="已审核" name="2" :size="requirementLength" :pageindex="pageindex" @pageChange="pageChange"
+            @refreshList="refreshList">
             <listMoudle :list="requirementList"></listMoudle>
           </el-tab-pane>
-          <el-tab-pane label="已对接" name="3" :size="requirementLength" :pageindex="pageindex" @pageChange="pageChange">
+          <el-tab-pane label="已对接" name="3" :size="requirementLength" :pageindex="pageindex" @pageChange="pageChange"
+            @refreshList="refreshList">
             <listMoudle :list="requirementList"></listMoudle>
           </el-tab-pane>
-          <el-tab-pane label="已完成" name="4" :size="requirementLength" :pageindex="pageindex" @pageChange="pageChange">
+          <el-tab-pane label="已完成" name="4" :size="requirementLength" :pageindex="pageindex" @pageChange="pageChange"
+            @refreshList="refreshList">
             <listMoudle :list="requirementList"></listMoudle>
           </el-tab-pane>
         </el-tabs>
         <button class="create-requirement" @click="clickCreateRequirement">+ 创建需求</button>
       </div>
 
-      <el-dialog title="提示" :visible.sync="createRequirementVisible" width="500px">
+      <el-dialog title="创建需求" :visible.sync="createRequirementVisible" width="800px">
         <div>
           <el-form :model="createRequirementForm" :rules="rules" ref="createRequirementForm" label-width="100px"
             class="demo-ruleForm">
-            <el-form-item prop="name" label="项目名称">
-              <el-input placeholder="请输入项目名称" v-model="createRequirementForm.name">
+            <el-form-item prop="name" label="需求名称">
+              <el-input placeholder="请输入需求名称" v-model="createRequirementForm.name">
               </el-input>
             </el-form-item>
             <el-form-item prop="description" label="需求介绍">
-              <el-input type="textarea" placeholder="请详细描述需求" v-model="createRequirementForm.description">
+              <el-input type="textarea" :rows="7" placeholder="请详细描述需求" v-model="createRequirementForm.description">
               </el-input>
             </el-form-item>
             <el-form-item label="合作方式" prop="cooperation_method">
@@ -74,6 +77,12 @@ import { uuid } from '@/utils/index';
             </el-form-item>
             <el-form-item label="附件">
               <input type="file" multiple="multiple" @change.self="onUploadFile" />
+              <ul>
+                <li v-for="(file, index) in filesList" :key="index">
+                  <span>{{file.name}}</span>
+                  <button @click="removeFile(file, index)">删除</button>
+                </li>
+              </ul>
             </el-form-item>
           </el-form>
         </div>
@@ -146,7 +155,9 @@ import { uuid } from '@/utils/index';
         },
         createSuccessVisible: false,
         pagestatus: '1', // 当前需求列表状态
-        loading: true
+        loading: true,
+        filesList: [], //上传文件列表
+        pageindex: 1,
       }
     },
     created() {
@@ -179,6 +190,9 @@ import { uuid } from '@/utils/index';
       },
       pageChange(pageindex) {
         this.getRequirementList(this.pagestatus, pageindex)
+      },
+      refreshList() {
+        this.getRequirementList(this.pagestatus, this.pageindex)
       },
       getRequirementList(status, pageindex, pagesize = 10) {
         let user_id = this.userInfo.id;
@@ -256,12 +270,39 @@ import { uuid } from '@/utils/index';
           cooperation_method: ''
         };
       },
+      // 创建需求中删除附件
+      removeFile(file, index) {
+        let me = this;
+        me.$alert(`确定删除 ${ file.name }？`, {
+          confirmButtonText: '确定',
+          callback: action => {
+            console.log('v', me.filesList)
+            me.filesList.splice(index, 1);
+            me.createRequirementForm.pic_annex.splice(index, 1);
+          }
+        });
+      },
       //  上传附件
-      async onUploadFile() {
-        const files = event.target.files[0];
+      async onUploadFile(event) {
+        this.filesList = [];
+        const files = event.target.files;
+        files.forEach(file => {
+          this.filesList.push(file)
+          this.uploadFileFn(file)
+        })
+      },
+      getType(file) {
+        var filename = file;
+        var index1 = filename.lastIndexOf(".");
+        var index2 = filename.length;
+        var type = filename.substring(index1, index2);
+        return type;
+      },
+      async uploadFileFn(files) {
         const reqid = uuid();
-        const suffix = files.name.split('.')[1];
-        const file_name = reqid + '.' + suffix;
+        const suffix = this.getType(files.name);
+        console.log('suffix', suffix)
+        let file_name = reqid + suffix;
         await getCosToken({
           reqid,
           method: 1,
@@ -283,23 +324,10 @@ import { uuid } from '@/utils/index';
             this.$message.error(e)
           })
         })
-        let type = this.matchType(files.name);
-        if (type === 'image') {
-          this.createRequirementForm.pic_annex.push({
-            name: files.name,
-            download_name: file_name
-          })
-        } else if (type === 'video') {
-          this.createRequirementForm.video_annex.push({
-            name: files.name,
-            download_name: file_name
-          })
-        } else {
-          this.createRequirementForm.file_annex.push({
-            name: files.name,
-            download_name: file_name
-          })
-        }
+        this.createRequirementForm.pic_annex.push({
+          name: files.name,
+          download_name: file_name
+        })
       },
       matchType(fileName) {
         // 后缀获取

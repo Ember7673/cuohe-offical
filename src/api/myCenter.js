@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-12-01 18:33:11
- * @LastEditTime: 2020-12-03 11:19:03
+ * @LastEditTime: 2020-12-05 18:55:04
  * @FillPath: Do not edit
  */
 import $http from '@/config/http';
@@ -46,5 +46,28 @@ export const inviteCodeMoudle = (params) => {
 // 创建邀请码
 export const createInviteCodeMoudle = (params) => {
   let requestUrl = '/create-invite-code';
+  return $http.post(requestUrl, params)
+}
+
+// 更新需求
+export const updateRequirementMoudle = (params) => {
+  let requestUrl = '/update-requirement';
+  return $http.post(requestUrl, params)
+}
+
+//删除需求
+export const deleteRequirementMoudle = (params) => {
+  let requestUrl = '/delete-requirement';
+  return $http.post(requestUrl, params)
+}
+
+// 更新资源
+export const updateResourceMoudle = (params) => {
+  let requestUrl = '/update-resource';
+  return $http.post(requestUrl, params)
+}
+//删除资源
+export const deleteResourceMoudle = (params) => {
+  let requestUrl = '/delete-resource';
   return $http.post(requestUrl, params)
 }

@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:53:29
- * @LastEditTime: 2020-12-03 21:21:14
+ * @LastEditTime: 2020-12-05 17:58:13
  * @FillPath: Do not edit
  */
 import axios from 'axios'
@@ -11,7 +11,7 @@ const vm = Vue.prototype;
 
 const config = {
   baseURL: '/official/api/',
-  timeout: 5000,
+  timeout: 10000,
   withCredentials: false,
   responseType: 'json',
   xsrfHeaderName: 'X-XSRF-TOKEN',
@@ -29,14 +29,22 @@ service.interceptors.request.use(config => {
   return Promise.reject(error)
 })
 
+
 service.interceptors.response.use(response => {
   const status = response.data.status;
-  if (status === 100) {
-    vm.$auth.removeUserInfo();
-    vm.$SignIn();
-    Message.error({ message: '用户未登录' })
-    return;
+  let location = window.location;
+  console.log('11', location.hash.indexOf('resetPassword'))
+  if (location.hash.indexOf('resetPassword') !== -1 || location.hash === '#/') {
+    // return response;
+  } else {
+    if (status === 100) {
+      vm.$auth.removeUserInfo();
+      vm.$SignIn();
+      Message.error({ message: '用户未登录' })
+      return;
+    }
   }
+
   return response
 }, error => {
   // LoadingInstance.close()

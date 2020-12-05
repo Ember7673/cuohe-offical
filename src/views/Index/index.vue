@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:29:54
- * @LastEditTime: 2020-11-27 11:11:02
+ * @LastEditTime: 2020-12-05 23:52:52
  * @FillPath: Do not edit
 -->
 <template>
@@ -20,13 +20,11 @@
       </div>
       <div class="home-content">
         <div class="guigu">
-          <p>1988</p>
-          <span>始于硅谷</span>
+          <p>1988，<span>始于硅谷</span></p>
           <img src="../../assets/image/1988.png" alt="">
         </div>
         <div class="china">
-          <p>2005</p>
-          <span>进入中国</span>
+          <p>2005，<span>进入中国</span></p>
         </div>
         <div class="money">
           <p>100亿</p>
@@ -69,6 +67,11 @@
 </script>
 
 <style lang="scss" scoped>
+  @font-face {
+    font-family: 'Montserrat';
+    src: url('../../assets/iconfont/SourceHanSerifCN-Medium.otf');
+  }
+
   .home {
     background: #000;
     color: #fff;
@@ -83,16 +86,18 @@
       background: #000;
       // max-width: 1500px;
       margin: 0 auto;
+      font-family: 'Montserrat';
 
       .home-banner {
         flex: 1;
         width: 100%;
         position: relative;
         min-height: 1000px;
-        margin-left: 80px;
+        margin-left: 100px;
+        margin-top: 70px;
 
         img {
-          width: 87%;
+          width: 65%;
           // max-width: 90%;
           // min-width: 700px;
         }
@@ -147,7 +152,7 @@
           }
 
           span {
-            font-size: 20px;
+            font-size: 30px;
           }
         }
 
@@ -159,7 +164,7 @@
           }
 
           span {
-            font-size: 20px;
+            font-size: 30px;
           }
         }
 
