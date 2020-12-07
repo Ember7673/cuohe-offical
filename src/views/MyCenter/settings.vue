@@ -45,7 +45,7 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <el-dialog title="选择头像" :visible.sync="dialogVisible">
+    <el-dialog customClass="customDialog" title="选择头像" :visible.sync="dialogVisible">
       <ul>
         <li class="avatarList" v-for="(item, index) in avatarList" :key="index">
           <img :src="item" alt="" @click="chooseAvatar(index)">
@@ -59,7 +59,7 @@
         <el-button type="primary" @click="onConfirm">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="修改昵称" :visible.sync="nicknameVisible">
+    <el-dialog customClass="customDialog" title="修改昵称" :visible.sync="nicknameVisible">
       <el-input placeholder="请输入昵称" v-model="changeInfo.nickname" @input="nicknameChange" />
       <span v-show="nicknameExit" class="nicknameExit">昵称已存在</span>
       <span slot="footer" class="dialog-footer">
@@ -67,7 +67,7 @@
         <el-button type="primary" @click="editNickname">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="修改账号身份" :visible.sync="labelVisible" width="550px">
+    <el-dialog customClass="customDialog" title="修改账号身份" :visible.sync="labelVisible" width="550px">
       <div class="choice">
         <el-checkbox-group v-model="checkList" @change="onLabelChange">
           <ul>
@@ -90,7 +90,7 @@
         <el-button type="primary" @click="editeLabel">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="修改行业类型" :visible.sync="industryVisible">
+    <el-dialog customClass="customDialog" title="修改行业类型" :visible.sync="industryVisible">
       <el-select v-model="changeInfo.industry" placeholder="请选择">
         <el-option v-for="item in industryOptions" :key="item" :value="item">
         </el-option>
@@ -100,7 +100,7 @@
         <el-button type="primary" @click="editIndustry">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="修改职位" :visible.sync="positionVisible">
+    <el-dialog customClass="customDialog" title="修改职位" :visible.sync="positionVisible">
       <el-select v-model="changeInfo.position" placeholder="请选择">
         <el-option v-for="item in positionOptions" :key="item" :value="item">
         </el-option>

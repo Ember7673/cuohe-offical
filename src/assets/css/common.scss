@@ -42,8 +42,21 @@ ol {
   position: relative;
 
   /deep/ .el-dialog__header {
-    padding: 20px 20px 40px;
+    padding: 20px 20px 20px;
     background: #000;
+    color: #fff;
+  }
+
+  /deep/ .el-dialog__title {
+    color: #fff;
+  }
+}
+
+.customDialog {
+  border-radius: 10px;
+
+  /deep/ .el-dialog__header {
+    border-radius: 10px 10px 0 0;
   }
 }
 
