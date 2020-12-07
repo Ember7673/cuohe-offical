@@ -1,12 +1,14 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:53:29
- * @LastEditTime: 2020-12-05 17:58:13
+ * @LastEditTime: 2020-12-07 16:06:52
  * @FillPath: Do not edit
  */
 import axios from 'axios'
 import { Message } from "element-ui"
 import Vue from 'vue';
+import errorCode from '@/config/config';
+
 const vm = Vue.prototype;
 
 const config = {
@@ -31,23 +33,24 @@ service.interceptors.request.use(config => {
 
 
 service.interceptors.response.use(response => {
-  const status = response.data.status;
+  let { status } = response.data;
   let location = window.location;
-  console.log('11', location.hash.indexOf('resetPassword'))
+  for (let code in errorCode) {
+    if (status === Number(code)) {
+      response.data['message'] = errorCode[code]['zh'];
+    }
+  }
   if (location.hash.indexOf('resetPassword') !== -1 || location.hash === '#/') {
     // return response;
   } else {
     if (status === 100) {
       vm.$auth.removeUserInfo();
       vm.$SignIn();
-      Message.error({ message: '用户未登录' })
       return;
     }
   }
-
   return response
 }, error => {
-  // LoadingInstance.close()
   if (error && error.response) {
     error.message = `连接错误${error.response.status}`
   } else {

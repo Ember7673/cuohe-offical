@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-24 09:25:37
- * @LastEditTime: 2020-11-24 18:17:05
+ * @LastEditTime: 2020-12-07 13:46:21
  * @FilePath: \cuohe-offical\src\views\Userinfo\personalInfo.vue
 -->
 <template>
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { getIndustryListMoudle, getPositionListMoudle, checkNnickNameExistMoudle, getAvatarListMoudle, setUserInfoMoudle } from '@/api/login';
+import { getIndustryListMoudle, getPositionListMoudle, checkNnickNameExistMoudle, getAvatarListMoudle, setUserInfoMoudle, getIsLogin } from '@/api/login';
 import {
   uuid, throttle
 } from "@/utils/index";
@@ -113,12 +113,34 @@ export default {
     }
   },
   created () {
-    this.getAvatarList();
-    this.getIndustryList();
-    this.getPositionList();
-    this.label = this.$route.query.label;
+    this.getUserInfo();
   },
   methods: {
+    getUserInfo () {
+      getIsLogin({
+        reqid: uuid()
+      }).then(res => {
+        const {
+          status,
+          message,
+          user
+        } = res.data;
+        if (!status) {
+          this.userInfo = user;
+          if (Number(user.status) !== 1) {
+            this.$message.warning('暂未到完善信息流程');
+            this.$router.push('/');
+            return;
+          }
+          this.getAvatarList();
+          this.getIndustryList();
+          this.getPositionList();
+          this.label = this.$route.query.label;
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
     selectAvatar () {
       this.dialogVisible = true;
     },
@@ -186,8 +208,7 @@ export default {
         this.$message.warning('请选择头像');
         return;
       }
-      let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
-      let user_id = userInfo.id;
+      let user_id = this.userInfo.id;
       setUserInfoMoudle({
         reqid: uuid(),
         user_id,

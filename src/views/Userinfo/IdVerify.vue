@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-22 17:38:02
- * @LastEditTime: 2020-11-24 14:34:57
+ * @LastEditTime: 2020-12-07 13:48:51
  * @FilePath: \cuohe-offical\src\views\Userinfo\IdVerify.vue
 -->
 <template>
@@ -30,7 +30,8 @@
 
 <script>
 import {
-  verifyUserIdentity
+  verifyUserIdentity,
+  getIsLogin
 } from '@/api/login';
 import {
   uuid,
@@ -62,14 +63,33 @@ export default {
           message: "请输入真实姓名",
           trigger: "blur"
         }
-      }
+      },
+      userInfo: {}
     }
   },
+  created () {
+    this.getUserInfo();
+  },
   methods: {
+    getUserInfo () {
+      getIsLogin({
+        reqid: uuid()
+      }).then(res => {
+        const {
+          status,
+          message,
+          user
+        } = res.data;
+        if (!status) {
+          this.userInfo = user;
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
     onVerify () {
       let me = this;
-      let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
-      let user_id = userInfo.id;
+      let user_id = me.userInfo.id;
       verifyUserIdentity({
         reqid: uuid(),
         user_id,
@@ -81,7 +101,11 @@ export default {
           message
         } = res.data;
         if (!status) {
-          this.$router.push('/personInfo')
+          if (this.userInfo.status !== 2 || this.userInfo.status !== 5) {
+            this.$router.push('/');
+          } else {
+            this.$router.push('/choose');
+          }
         } else {
           me.$message.error(res.data.message);
         }
