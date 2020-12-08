@@ -114,539 +114,539 @@
 </template>
 
 <script>
-  import {
-    getRequirementListMoudle,
-    getResourceListMoudle
-  } from '@/api/myCenter';
-  import {
-    getAvatarListMoudle,
-    updateUserInfoMoudle,
-    getIndustryListMoudle,
-    getPositionListMoudle,
-    getIsLogin,
-    checkNnickNameExistMoudle
-  } from '@/api/login';
-  import {
-    uuid,
-    setCookie,
-    throttle
-  } from "@/utils/index";
-  const AVATARURL = 'https://cuohe-1304244764.cos.ap-beijing.myqcloud.com/';
-  export default {
-    data() {
-      return {
-        changeInfo: {},
-        userInfo: {},
-        requirementLength: 0,
-        resourcesLength: 0,
-        activeName: '1',
-        dialogVisible: false,
-        avatarList: [],
-        selectedAvatar: '',
-        selectedAvatarIndex: 0,
-        nicknameVisible: false,
-        industryVisible: false,
-        positionVisible: false,
-        labelVisible: false,
-        industryOptions: [],
-        positionOptions: [],
-        checkList: [],
-        nicknameExit: false
-      }
-    },
-    created() {
-      this.getUserInfo();
-      this.getAvatarList();
-      this.getIndustryList();
-      this.getPositionList();
-    },
-    methods: {
-      getUserInfo() {
-        getIsLogin({
-          reqid: uuid()
-        }).then(res => {
-          const {
-            status,
-            message,
-            user
-          } = res.data;
-          if (!status) {
-            this.userInfo = user;
-            this.changeInfo = JSON.parse(JSON.stringify(this.userInfo));
-            this.getRequirementList('1,2,3,4', 1, 10);
-            this.getResourceList('1,2', 1, 10);
-          } else {
-            this.$message.error(message);
-          }
-        })
-      },
-      getIndustryList() {
-        getIndustryListMoudle({
-          reqid: uuid()
-        }).then(res => {
-          const {
-            status,
-            message,
-            data
-          } = res.data;
-          if (!status) {
-            this.industryOptions = data;
-          } else {
-            this.$message.error(message);
-          }
-        })
-      },
-      getPositionList() {
-        getPositionListMoudle({
-          reqid: uuid()
-        }).then(res => {
-          const {
-            status,
-            message,
-            data
-          } = res.data;
-          if (!status) {
-            this.positionOptions = data;
-          } else {
-            this.$message.error(message);
-          }
-        })
-      },
-      getRequirementList(status, pageindex, pagesize) {
-        console.log(this.userInfo.id)
-        getRequirementListMoudle({
-          reqid: uuid(),
+import {
+  getRequirementListMoudle,
+  getResourceListMoudle
+} from '@/api/myCenter';
+import {
+  getAvatarListMoudle,
+  updateUserInfoMoudle,
+  getIndustryListMoudle,
+  getPositionListMoudle,
+  getIsLogin,
+  checkNnickNameExistMoudle
+} from '@/api/login';
+import {
+  uuid,
+  setCookie,
+  throttle
+} from "@/utils/index";
+const AVATARURL = 'https://cuohe-1304244764.cos.ap-beijing.myqcloud.com/';
+export default {
+  data () {
+    return {
+      changeInfo: {},
+      userInfo: {},
+      requirementLength: 0,
+      resourcesLength: 0,
+      activeName: '1',
+      dialogVisible: false,
+      avatarList: [],
+      selectedAvatar: '',
+      selectedAvatarIndex: 0,
+      nicknameVisible: false,
+      industryVisible: false,
+      positionVisible: false,
+      labelVisible: false,
+      industryOptions: [],
+      positionOptions: [],
+      checkList: [],
+      nicknameExit: false
+    }
+  },
+  created () {
+    this.getUserInfo();
+    this.getAvatarList();
+    this.getIndustryList();
+    this.getPositionList();
+  },
+  methods: {
+    getUserInfo () {
+      getIsLogin({
+        reqid: uuid()
+      }).then(res => {
+        const {
           status,
-          user_id: this.userInfo.id,
-          pageindex,
-          pagesize
-        }).then(res => {
-          const {
-            status,
-            data,
-            message
-          } = res.data;
-          if (!status) {
-            this.requirementLength = data.size;
-          } else {
-            this.$message.error(message);
-          }
-        })
-      },
-      getResourceList(status, pageindex, pagesize) {
-        getResourceListMoudle({
-          reqid: uuid(),
-          status,
-          user_id: this.userInfo.id,
-          pageindex,
-          pagesize
-        }).then(res => {
-          const {
-            status,
-            data,
-            message
-          } = res.data;
-          if (!status) {
-            this.resourcesLength = data.size;
-          } else {
-            this.$message.error(message);
-          }
-        })
-      },
-      selectAvatar() {
-        this.dialogVisible = true;
-      },
-      getAvatarList() {
-        getAvatarListMoudle({
-          reqid: uuid()
-        }).then(res => {
-          const {
-            status,
-            message,
-            data
-          } = res.data;
-          if (!status) {
-            this.avatarList = data.map(item => AVATARURL + item);
-          } else {
-            this.$message.error(message);
-          }
-        })
-      },
-      chooseAvatar(index) {
-        this.selectedAvatarIndex = index;
-      },
-      onConfirm() {
-        this.selectedAvatar = this.avatarList[this.selectedAvatarIndex];
-        updateUserInfoMoudle({
-          reqid: uuid(),
-          user_id: this.userInfo.id,
-          avatar: this.selectedAvatar,
-          industry: this.userInfo.industry,
-          position: this.userInfo.position,
-          label: this.userInfo.label,
-          nickname: this.userInfo.nickname
-        }).then(res => {
-          const {
-            status,
-            message,
-            data
-          } = res.data;
-          if (!status) {
-            this.userInfo.avatar = this.selectedAvatar;
-            this.dialogVisible = false;
-            // setCookie('userInfo', JSON.stringify(this.userInfo));
-            this.$auth.removeUserInfo();
-            this.$store.commit('auth/getUserInfo', JSON.stringify(this.userInfo))
-            this.$store.commit('auth/getAvatar', this.selectedAvatar)
-            setCookie('userInfo', JSON.stringify(this.userInfo));
-            this.$message.success('修改成功');
-          } else {
-            this.$message.error(message);
-          }
-        })
-      },
-      // 修改账户身份
-      onLabelChange(val) {
-        this.checkList = val;
-      },
-      checkNnickNameExist(nick_name) {
-        throttle(
-          checkNnickNameExistMoudle({
-            reqid: uuid(),
-            nick_name
-          }).then(res => {
-            const {
-              status,
-              message,
-              exist
-            } = res.data;
-            if (!status) {
-              this.nicknameExit = exist;
-            } else {
-              this.$message.error(message);
-            }
-          }), 2000)
-      },
-      nicknameChange(val) {
-        if (!val) return;
-        this.checkNnickNameExist(val)
-      },
-      editNickname() {
-        if (this.nicknameExit) return;
-        updateUserInfoMoudle({
-          reqid: uuid(),
-          user_id: this.userInfo.id,
-          avatar: this.userInfo.avatar,
-          industry: this.userInfo.industry,
-          position: this.userInfo.position,
-          label: this.userInfo.label,
-          nickname: this.changeInfo.nickname
-        }).then(res => {
-          const {
-            status,
-            message,
-            data
-          } = res.data;
-          if (!status) {
-            this.nicknameVisible = false;
-            this.userInfo.nickname = this.changeInfo.nickname;
-            setCookie('userInfo', JSON.stringify(this.userInfo));
-            this.$message.success('修改成功');
-          } else {
-            this.$message.error(message);
-          }
-        })
-      },
-      editIndustry() {
-        updateUserInfoMoudle({
-          reqid: uuid(),
-          user_id: this.userInfo.id,
-          avatar: this.userInfo.avatar,
-          industry: this.changeInfo.industry,
-          position: this.userInfo.position,
-          label: this.userInfo.label,
-          nickname: this.userInfo.nickname
-        }).then(res => {
-          const {
-            status,
-            message,
-            data
-          } = res.data;
-          if (!status) {
-            this.industryVisible = false;
-            setCookie('userInfo', JSON.stringify(this.userInfo));
-            this.userInfo.industry = this.changeInfo.industry;
-            this.userInfo = JSON.parse(JSON.parse(window.localStorage.getItem('userInfo')));
-            this.$message.success('修改成功');
-          } else {
-            this.$message.error(message);
-          }
-        })
-      },
-      editPosition() {
-        updateUserInfoMoudle({
-          reqid: uuid(),
-          user_id: this.userInfo.id,
-          avatar: this.userInfo.avatar,
-          industry: this.userInfo.industry,
-          position: this.changeInfo.position,
-          label: this.userInfo.label,
-          nickname: this.userInfo.nickname
-        }).then(res => {
-          const {
-            status,
-            message,
-            data
-          } = res.data;
-          if (!status) {
-            this.positionVisible = false;
-            this.userInfo.position = this.changeInfo.position;
-            setCookie('userInfo', JSON.stringify(this.userInfo));
-            this.$message.success('修改成功');
-          } else {
-            this.$message.error(message);
-          }
-        })
-      },
-      editeLabel() {
-        let label = '';
-        if (this.checkList.length === 2) {
-          label = '1,2';
-        } else if (this.checkList.length === 1) {
-          label = this.checkList[0];
+          message,
+          user
+        } = res.data;
+        if (!status) {
+          this.userInfo = user;
+          this.changeInfo = JSON.parse(JSON.stringify(this.userInfo));
+          this.getRequirementList('1,2,3,4', 1, 10);
+          this.getResourceList('1,2', 1, 10);
         } else {
-          this.$message.warning('请选择账户身份');
-          return;
+          this.$message.error(message);
         }
-        updateUserInfoMoudle({
+      })
+    },
+    getIndustryList () {
+      getIndustryListMoudle({
+        reqid: uuid()
+      }).then(res => {
+        const {
+          status,
+          message,
+          data
+        } = res.data;
+        if (!status) {
+          this.industryOptions = data;
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
+    getPositionList () {
+      getPositionListMoudle({
+        reqid: uuid()
+      }).then(res => {
+        const {
+          status,
+          message,
+          data
+        } = res.data;
+        if (!status) {
+          this.positionOptions = data;
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
+    getRequirementList (status, pageindex, pagesize) {
+      console.log(this.userInfo.id)
+      getRequirementListMoudle({
+        reqid: uuid(),
+        status,
+        user_id: this.userInfo.id,
+        pageindex,
+        pagesize
+      }).then(res => {
+        const {
+          status,
+          data,
+          message
+        } = res.data;
+        if (!status) {
+          this.requirementLength = data.size;
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
+    getResourceList (status, pageindex, pagesize) {
+      getResourceListMoudle({
+        reqid: uuid(),
+        status,
+        user_id: this.userInfo.id,
+        pageindex,
+        pagesize
+      }).then(res => {
+        const {
+          status,
+          data,
+          message
+        } = res.data;
+        if (!status) {
+          this.resourcesLength = data.size;
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
+    selectAvatar () {
+      this.dialogVisible = true;
+    },
+    getAvatarList () {
+      getAvatarListMoudle({
+        reqid: uuid()
+      }).then(res => {
+        const {
+          status,
+          message,
+          data
+        } = res.data;
+        if (!status) {
+          this.avatarList = data.map(item => AVATARURL + item);
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
+    chooseAvatar (index) {
+      this.selectedAvatarIndex = index;
+    },
+    onConfirm () {
+      this.selectedAvatar = this.avatarList[this.selectedAvatarIndex];
+      updateUserInfoMoudle({
+        reqid: uuid(),
+        user_id: this.userInfo.id,
+        avatar: this.selectedAvatar,
+        industry: this.userInfo.industry,
+        position: this.userInfo.position,
+        label: this.userInfo.label,
+        nickname: this.userInfo.nickname
+      }).then(res => {
+        const {
+          status,
+          message,
+          data
+        } = res.data;
+        if (!status) {
+          this.userInfo.avatar = this.selectedAvatar;
+          this.dialogVisible = false;
+          // setCookie('userInfo', JSON.stringify(this.userInfo));
+          this.$auth.removeUserInfo();
+          this.$store.commit('auth/getUserInfo', JSON.stringify(this.userInfo))
+          this.$store.commit('auth/getAvatar', this.selectedAvatar)
+          setCookie('userInfo', JSON.stringify(this.userInfo));
+          this.$message.success('修改成功');
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
+    // 修改账户身份
+    onLabelChange (val) {
+      this.checkList = val;
+    },
+    checkNnickNameExist (nick_name) {
+      throttle(
+        checkNnickNameExistMoudle({
           reqid: uuid(),
-          user_id: this.userInfo.id,
-          avatar: this.userInfo.avatar,
-          industry: this.userInfo.industry,
-          position: this.changeInfo.position,
-          label,
-          nickname: this.userInfo.nickname
+          nick_name
         }).then(res => {
           const {
             status,
             message,
-            data
+            exist
           } = res.data;
           if (!status) {
-            this.labelVisible = false;
-            this.userInfo.label = label;
-            setCookie('userInfo', JSON.stringify(this.userInfo));
-            this.$alert(
-              `您的账户身份修改申请已经提交，请您耐心等待审核。审核期间，不可以创建资源和需求，可以浏览已创建资源和需求。同时，为了营造良好的网站环境，对账号重要信息的修改进行次数限制，本次修改 100 天后可以进行再次修改，希望您能理解！`,
-              '已提交申请', {
-                confirmButtonText: '确定'
-              });
+            this.nicknameExit = exist;
           } else {
             this.$message.error(message);
           }
-        })
+        }), 2000)
+    },
+    nicknameChange (val) {
+      if (!val) return;
+      this.checkNnickNameExist(val)
+    },
+    editNickname () {
+      if (this.nicknameExit) return;
+      updateUserInfoMoudle({
+        reqid: uuid(),
+        user_id: this.userInfo.id,
+        avatar: this.userInfo.avatar,
+        industry: this.userInfo.industry,
+        position: this.userInfo.position,
+        label: this.userInfo.label,
+        nickname: this.changeInfo.nickname
+      }).then(res => {
+        const {
+          status,
+          message,
+          data
+        } = res.data;
+        if (!status) {
+          this.nicknameVisible = false;
+          this.userInfo.nickname = this.changeInfo.nickname;
+          setCookie('userInfo', JSON.stringify(this.userInfo));
+          this.$message.success('修改成功');
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
+    editIndustry () {
+      updateUserInfoMoudle({
+        reqid: uuid(),
+        user_id: this.userInfo.id,
+        avatar: this.userInfo.avatar,
+        industry: this.changeInfo.industry,
+        position: this.userInfo.position,
+        label: this.userInfo.label,
+        nickname: this.userInfo.nickname
+      }).then(res => {
+        const {
+          status,
+          message,
+          data
+        } = res.data;
+        if (!status) {
+          this.industryVisible = false;
+          setCookie('userInfo', JSON.stringify(this.userInfo));
+          this.userInfo.industry = this.changeInfo.industry;
+          this.userInfo = JSON.parse(JSON.parse(window.localStorage.getItem('userInfo')));
+          this.$message.success('修改成功');
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
+    editPosition () {
+      updateUserInfoMoudle({
+        reqid: uuid(),
+        user_id: this.userInfo.id,
+        avatar: this.userInfo.avatar,
+        industry: this.userInfo.industry,
+        position: this.changeInfo.position,
+        label: this.userInfo.label,
+        nickname: this.userInfo.nickname
+      }).then(res => {
+        const {
+          status,
+          message,
+          data
+        } = res.data;
+        if (!status) {
+          this.positionVisible = false;
+          this.userInfo.position = this.changeInfo.position;
+          setCookie('userInfo', JSON.stringify(this.userInfo));
+          this.$message.success('修改成功');
+        } else {
+          this.$message.error(message);
+        }
+      })
+    },
+    editeLabel () {
+      let label = '';
+      if (this.checkList.length === 2) {
+        label = '1,2';
+      } else if (this.checkList.length === 1) {
+        label = this.checkList[0];
+      } else {
+        this.$message.warning('请选择账户身份');
+        return;
       }
+      updateUserInfoMoudle({
+        reqid: uuid(),
+        user_id: this.userInfo.id,
+        avatar: this.userInfo.avatar,
+        industry: this.userInfo.industry,
+        position: this.changeInfo.position,
+        label,
+        nickname: this.userInfo.nickname
+      }).then(res => {
+        const {
+          status,
+          message,
+          data
+        } = res.data;
+        if (!status) {
+          this.labelVisible = false;
+          this.userInfo.label = label;
+          setCookie('userInfo', JSON.stringify(this.userInfo));
+          this.$alert(
+            `您的账户身份修改申请已经提交，请您耐心等待审核。审核期间，不可以创建资源和需求，可以浏览已创建资源和需求。同时，为了营造良好的网站环境，对账号重要信息的修改进行次数限制，本次修改 100 天后可以进行再次修改，希望您能理解！`,
+            '已提交申请', {
+            confirmButtonText: '确定'
+          });
+        } else {
+          this.$message.error(message);
+        }
+      })
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  .settings {
-    background: #fff;
+.settings {
+  background: #fff;
 
-    .header {
-      width: 100%;
-      height: 250px;
-      background-image: url('../../assets/image/settingsBg.jpg');
-      text-align: center;
+  .header {
+    width: 100%;
+    height: 250px;
+    background-image: url("../../assets/image/settingsBg.jpg");
+    background-size: cover;
+    text-align: center;
+    position: relative;
+    color: #fff;
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 100%;
+      margin-top: 65px;
+    }
+
+    .info {
+      display: inline-block;
+      margin-left: 20px;
+
+      .nickname {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 20px;
+        text-align: left;
+      }
+    }
+
+    .number {
+      display: inline-block;
+      font-size: 14px;
+      margin: 30px 60px 0 0;
+
+      span {
+        font-size: 19px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .content {
+    width: 60%;
+    margin: 0 auto;
+    font-size: 14px;
+    padding-bottom: 40px;
+    color: #4c4c4c;
+
+    /deep/ .el-tabs__nav {
+      height: 80px;
+      line-height: 80px;
+    }
+
+    /deep/ .el-tabs__item.is-active {
+      color: #303133;
+    }
+
+    /deep/ .el-tabs__item:hover {
+      color: #303133;
+    }
+
+    /deep/ .el-tabs__active-bar {
+      background-color: #c99540;
+      height: 3px;
+    }
+
+    /deep/ .el-tabs__item:focus.is-active.is-focus:not(:active) {
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    /deep/ .el-tabs__nav-wrap::after {
+      background-color: #ecbe73;
+    }
+
+    div {
       position: relative;
-      color: #fff;
 
-      .avatar {
+      span {
+        display: inline-block;
+        width: 80px;
+        text-align: right;
+        line-height: 40px;
+        margin-right: 20px;
+      }
+
+      .btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #c99540;
+        color: #fff;
+        padding: 5px 20px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+      }
+    }
+
+    .line {
+      border-bottom: 1px solid #d2d2d2;
+      padding: 10px;
+    }
+
+    .avatar {
+      cursor: pointer;
+
+      img {
         width: 80px;
         height: 80px;
         border-radius: 100%;
-        margin-top: 65px;
+        vertical-align: bottom;
       }
-
-      .info {
-        display: inline-block;
-        margin-left: 20px;
-
-        .nickname {
-          font-size: 20px;
-          font-weight: bold;
-          margin-top: 20px;
-          text-align: left;
-        }
-      }
-
-      .number {
-        display: inline-block;
-        font-size: 14px;
-        margin: 30px 60px 0 0;
-
-        span {
-          font-size: 19px;
-          font-weight: 500;
-        }
-      }
-    }
-
-    .content {
-      width: 60%;
-      margin: 0 auto;
-      font-size: 14px;
-      padding-bottom: 40px;
-      color: #4C4C4C;
-
-      /deep/ .el-tabs__nav {
-        height: 80px;
-        line-height: 80px;
-      }
-
-      /deep/ .el-tabs__item.is-active {
-        color: #303133;
-      }
-
-      /deep/ .el-tabs__item:hover {
-        color: #303133;
-      }
-
-      /deep/ .el-tabs__active-bar {
-        background-color: #C99540;
-        height: 3px;
-      }
-
-      /deep/ .el-tabs__item:focus.is-active.is-focus:not(:active) {
-        box-shadow: none;
-        border-radius: 0;
-      }
-
-      /deep/ .el-tabs__nav-wrap::after {
-        background-color: #ECBE73;
-      }
-
-      div {
-        position: relative;
-
-        span {
-          display: inline-block;
-          width: 80px;
-          text-align: right;
-          line-height: 40px;
-          margin-right: 20px;
-        }
-
-        .btn {
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          background: #C99540;
-          color: #fff;
-          padding: 5px 20px;
-          border: none;
-          outline: none;
-          cursor: pointer;
-        }
-      }
-
-      .line {
-        border-bottom: 1px solid #D2D2D2;
-        padding: 10px;
-      }
-
-      .avatar {
-        cursor: pointer;
-
-        img {
-          width: 80px;
-          height: 80px;
-          border-radius: 100%;
-          vertical-align: bottom;
-        }
-      }
-    }
-
-    .avatarList {
-      display: inline-block;
-      position: relative;
-      margin: 10px 30px;
-
-      img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-      }
-
-      .selected {
-        background: rgba($color: #000000, $alpha: 0.35);
-        width: 50px;
-        height: 50px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        border-radius: 50%;
-
-        img {
-          width: 34px;
-          height: auto;
-          position: absolute;
-          top: 20px;
-          left: 12px;
-        }
-      }
-    }
-
-    .choice {
-      width: 480px;
-      height: 256px;
-      background: #F5F5F5;
-      border: 2px solid #EEEEEE;
-      border-radius: 5px;
-      margin-top: 20px;
-      position: relative;
-
-      li {
-        width: 50%;
-        float: left;
-        text-align: center;
-        margin: 0 auto;
-        padding-top: 46px;
-
-        img {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-        }
-
-        p {
-          color: #000;
-          margin: 20px 0;
-          font-weight: 400;
-          color: #4C4C4C;
-        }
-
-      }
-
-      /deep/.el-checkbox-group {
-        font-size: 14px;
-      }
-
-      .box {
-        position: absolute;
-        width: 2px;
-        height: 180px;
-        background: #ccc;
-        top: 32px;
-        left: 50%;
-      }
-    }
-
-    .nicknameExit {
-      color: red;
-      padding-top: 10px;
-      display: inline-block;
     }
   }
+
+  .avatarList {
+    display: inline-block;
+    position: relative;
+    margin: 10px 30px;
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+
+    .selected {
+      background: rgba($color: #000000, $alpha: 0.35);
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 50%;
+
+      img {
+        width: 34px;
+        height: auto;
+        position: absolute;
+        top: 20px;
+        left: 12px;
+      }
+    }
+  }
+
+  .choice {
+    width: 480px;
+    height: 256px;
+    background: #f5f5f5;
+    border: 2px solid #eeeeee;
+    border-radius: 5px;
+    margin-top: 20px;
+    position: relative;
+
+    li {
+      width: 50%;
+      float: left;
+      text-align: center;
+      margin: 0 auto;
+      padding-top: 46px;
+
+      img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+      }
+
+      p {
+        color: #000;
+        margin: 20px 0;
+        font-weight: 400;
+        color: #4c4c4c;
+      }
+    }
+
+    /deep/.el-checkbox-group {
+      font-size: 14px;
+    }
+
+    .box {
+      position: absolute;
+      width: 2px;
+      height: 180px;
+      background: #ccc;
+      top: 32px;
+      left: 50%;
+    }
+  }
+
+  .nicknameExit {
+    color: red;
+    padding-top: 10px;
+    display: inline-block;
+  }
+}
 </style>

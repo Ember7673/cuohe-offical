@@ -74,6 +74,7 @@ import {
   Encrypt
 } from "@/utils/index";
 import router from '@/router';
+import store from '@/store';
 export default {
   name: 'register',
   data () {
@@ -292,7 +293,11 @@ export default {
           message
         } = res.data;
         if (!status) {
+          // this.userInfo = user;
+          store.commit('auth/getUserInfo', JSON.stringify(user))
+          store.commit('auth/getAvatar', user.avatar)
           window.location.href = '/#/idverify';
+          location.reload();
         } else if (status === 7009) {
           this.$message.error('用户账号不存在');
         } else {

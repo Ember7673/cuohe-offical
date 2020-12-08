@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-20 19:45:15
- * @LastEditTime: 2020-12-07 22:31:40
+ * @LastEditTime: 2020-12-08 11:48:57
  * @FillPath: Do not edit
 -->
 <template>
@@ -64,157 +64,156 @@
 </template>
 
 <script>
-  import {
-    getIsLogin,
-    logout
-  } from '@/api/login';
-  import {
-    mapState
-  } from 'vuex'
-  import {
-    uuid,
-    getCookie,
-    setCookie,
-    removeCookie,
-    isEmptyObject
-  } from '@/utils/index';
-  export default {
-    data() {
-      return {
-        isLogged: false,
-        avatar: '',
-        userInfo: {},
-        level: 1
-      }
+import {
+  getIsLogin,
+  logout
+} from '@/api/login';
+import {
+  mapState
+} from 'vuex'
+import {
+  uuid,
+  getCookie,
+  setCookie,
+  removeCookie,
+  isEmptyObject
+} from '@/utils/index';
+export default {
+  data () {
+    return {
+      isLogged: false,
+      avatar: '',
+      userInfo: {},
+      level: 1
+    }
+  },
+  computed: {
+    curUserInfo () {
+      const user = this.$store.state.auth.userInfo;
+      return isEmptyObject(user) ? {} : JSON.parse(user);
     },
-    computed: {
-      curUserInfo() {
-        const user = this.$store.state.auth.userInfo;
-        return isEmptyObject(user) ? {} : JSON.parse(user);
-      },
-      curAvatar: {
-        get() {
-          if (this.$store.state.auth.avatar) {
-            this.isLogged = true;
-          }
-          return this.$store.state.auth.avatar;
-        },
-        set(val) {
-
+    curAvatar: {
+      get () {
+        if (this.$store.state.auth.avatar) {
+          this.isLogged = true;
         }
-      }
-    },
-    created() {
-      if (getCookie('heat_sess_official')) {
-        this.isLogged = true;
-      }
-      this.isLogin();
-    },
-    mounted() {
-      this.avatar = window.localStorage.getItem('avatar').replace(/\"/g, "");
-    },
-    methods: {
-      menuClick(url) {
-        if (Number(this.userInfo.status) === 0 || Number(this.userInfo.status) === 1 || Number(this.userInfo.status) ===
-          2) {
-          this.$message.warning('用户信息未审核');
-          return;
-        } else {
-          this.$router.push(`/${url}`);
-        }
+        return this.$store.state.auth.avatar;
       },
-      isLogin() {
-        getIsLogin({
-          reqid: uuid()
-        }).then(res => {
-          const {
-            status,
-            message,
-            user
-          } = res.data;
-          if (!status) {
-            this.isLogged = true;
-            this.userInfo = user;
-            this.level = user.level;
-            this.curAvatar = user.avatar;
-            this.$auth.removeUserInfo();
-            this.$store.commit('auth/getUserInfo', JSON.stringify(user))
-            this.$store.commit('auth/getAvatar', user.avatar)
-          } else if (status === 100) {
-            this.isLogged = false;
-          } else {
-            this.isLogged = false;
-            this.$message.error(message);
-          }
-        })
-      },
-      onLogout() {
-        logout({
-          reqid: uuid()
-        }).then(res => {
-          const {
-            status,
-            message
-          } = res.data;
-          if (!status) {
-            this.$router.push('/');
-            this.isLogged = false;
-            this.$auth.removeUserInfo();
-            this.$message.success('退出登录成功');
-          }
-        })
+      set (val) {
       }
     }
+  },
+  created () {
+    if (getCookie('heat_sess_official')) {
+      this.isLogged = true;
+    }
+    this.isLogin();
+  },
+  mounted () {
+    this.avatar = window.localStorage.getItem('avatar').replace(/\"/g, "");
+  },
+  methods: {
+    menuClick (url) {
+      if (Number(this.userInfo.status) === 0 || Number(this.userInfo.status) === 1 || Number(this.userInfo.status) ===
+        2) {
+        this.$message.warning('用户信息未审核');
+        return;
+      } else {
+        this.$router.push(`/${url}`);
+      }
+    },
+    isLogin () {
+      getIsLogin({
+        reqid: uuid()
+      }).then(res => {
+        const {
+          status,
+          message,
+          user
+        } = res.data;
+        if (!status) {
+          this.isLogged = true;
+          this.userInfo = user;
+          this.level = user.level;
+          this.curAvatar = user.avatar;
+          this.$auth.removeUserInfo();
+          this.$store.commit('auth/getUserInfo', JSON.stringify(user))
+          this.$store.commit('auth/getAvatar', user.avatar)
+        } else if (status === 100) {
+          this.isLogged = false;
+        } else {
+          this.isLogged = false;
+          this.$message.error(message);
+        }
+      })
+    },
+    onLogout () {
+      logout({
+        reqid: uuid()
+      }).then(res => {
+        const {
+          status,
+          message
+        } = res.data;
+        if (!status) {
+          this.$router.push('/');
+          this.isLogged = false;
+          this.$auth.removeUserInfo();
+          this.$message.success('退出登录成功');
+        }
+      })
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  .header {
-    width: 100%;
-    background: #000;
-    color: #fff;
+.header {
+  width: 100%;
+  background: #000;
+  color: #fff;
 
-    .header-content {
-      width: 1200px;
-      height: 70px;
-      line-height: 70px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
+  .header-content {
+    width: 1200px;
+    height: 70px;
+    line-height: 70px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
 
-      .logo {
-        width: 200px;
-        height: auto;
-        font-size: 30px;
+    .logo {
+      width: 200px;
+      height: auto;
+      font-size: 30px;
+    }
+
+    .operation {
+      p {
+        display: inline-block;
+        margin-right: 25px;
+        font-size: 16px;
+        font-weight: 400;
+        font-family: "Montserrat";
+        cursor: pointer;
       }
 
-      .operation {
-        p {
-          display: inline-block;
-          margin-right: 25px;
-          font-size: 16px;
-          font-weight: 400;
-          font-family: "Montserrat";
-          cursor: pointer;
-        }
+      .notLogged {
+        display: inline-block;
+      }
 
-        .notLogged {
-          display: inline-block;
-        }
+      .logged {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
 
-        .logged {
-          position: relative;
-          display: inline-block;
-          cursor: pointer;
-
-          img {
-            width: 40px;
-            height: 40px;
-            vertical-align: middle;
-            border-radius: 50%;
-          }
+        img {
+          width: 40px;
+          height: 40px;
+          vertical-align: middle;
+          border-radius: 50%;
         }
       }
     }
   }
+}
 </style>

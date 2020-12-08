@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:29:54
- * @LastEditTime: 2020-12-05 23:52:52
+ * @LastEditTime: 2020-12-08 10:53:24
  * @FillPath: Do not edit
 -->
 <template>
@@ -47,172 +47,174 @@
 </template>
 
 <script>
-  export default {
-    methods: {
-      onMouseover(event) {
-        let e = event || window.event;
-        let left = e.clientX;
-        let top = e.clientY;
-        // console.log(left, top)
+export default {
+  methods: {
+    onMouseover (event) {
+      let e = event || window.event;
+      let left = e.clientX;
+      let top = e.clientY;
+      // console.log(left, top)
 
-        this.$refs['banner1'].style.left = -(left / 15) + 'px';
-        this.$refs['banner1'].style.top = -(top / 15) + 'px';
-        this.$refs['banner2'].style.left = -(left / 40) + 'px';
-        this.$refs['banner2'].style.top = -(top / 40) + 'px';
-        this.$refs['banner3'].style.left = -(left / 40) + 'px';
-        this.$refs['banner3'].style.top = -(top / 40) + 'px';
-      },
-    }
+      this.$refs['banner1'].style.left = -(left / 15) + 'px';
+      this.$refs['banner1'].style.top = -(top / 15) + 'px';
+      this.$refs['banner2'].style.left = -(left / 40) + 'px';
+      this.$refs['banner2'].style.top = -(top / 40) + 'px';
+      this.$refs['banner3'].style.left = -(left / 40) + 'px';
+      this.$refs['banner3'].style.top = -(top / 40) + 'px';
+    },
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  @font-face {
-    font-family: 'Montserrat';
-    src: url('../../assets/iconfont/SourceHanSerifCN-Medium.otf');
-  }
+@font-face {
+  font-family: "Montserrat";
+  src: url("../../assets/iconfont/SourceHanSerifCN-Medium.otf");
+}
 
-  .home {
+.home {
+  background: #000;
+  color: #fff;
+  min-width: 1200px;
+
+  .home-body {
+    position: relative;
+    display: flex;
+    width: 100%;
+    padding-top: 10px;
+    height: 900px;
     background: #000;
-    color: #fff;
-    min-width: 1200px;
+    // max-width: 1500px;
+    margin: 0 auto;
+    font-family: "Montserrat";
 
-    .home-body {
-      position: relative;
-      display: flex;
+    .home-banner {
+      flex: 1;
       width: 100%;
-      padding-top: 10px;
-      height: 900px;
-      background: #000;
-      // max-width: 1500px;
-      margin: 0 auto;
-      font-family: 'Montserrat';
+      position: relative;
+      min-height: 1000px;
+      margin-left: 100px;
+      margin-top: 70px;
 
-      .home-banner {
-        flex: 1;
-        width: 100%;
-        position: relative;
-        min-height: 1000px;
-        margin-left: 100px;
-        margin-top: 70px;
+      img {
+        width: 70%;
+      }
 
+      .banner1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 95%;
+      }
+
+      .banner2 {
+        display: inline-block;
+        position: absolute;
+        margin-top: -46px;
+        top: 0;
+        left: 0;
         img {
-          width: 65%;
-          // max-width: 90%;
-          // min-width: 700px;
-        }
-
-        .banner1 {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 95%;
-        }
-
-        .banner2 {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 87%;
-        }
-
-        .banner3 {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 85%;
+          width: 80%;
         }
       }
 
-      .home-content {
-        width: 300px;
-        min-height: 130px;
-        margin-right: 50px;
-        margin-top: 30px;
+      .banner3 {
         position: absolute;
-        top: 90px;
-        right: 10%;
+        top: 0;
+        left: 0;
+        width: 85%;
+      }
+    }
 
-        .guigu {
+    .home-content {
+      width: 300px;
+      min-height: 130px;
+      margin-right: 50px;
+      margin-top: 30px;
+      position: absolute;
+      top: 90px;
+      right: 10%;
+
+      .guigu {
+        position: relative;
+        z-index: 0;
+
+        img {
+          width: 39px;
+          position: absolute;
+          top: -5px;
+          left: 37px;
+          z-index: -1;
+        }
+
+        p {
+          font-size: 30px;
           position: relative;
-          z-index: 0;
-
-          img {
-            width: 39px;
-            position: absolute;
-            top: -5px;
-            left: 37px;
-            z-index: -1;
-          }
-
-          p {
-            font-size: 30px;
-            position: relative;
-            z-index: 9;
-          }
-
-          span {
-            font-size: 30px;
-          }
+          z-index: 9;
         }
 
-        .china {
-          margin-top: 20px;
+        span {
+          font-size: 30px;
+        }
+      }
 
-          p {
-            font-size: 30px;
-          }
+      .china {
+        margin-top: 20px;
 
-          span {
-            font-size: 30px;
-          }
+        p {
+          font-size: 30px;
         }
 
-        .money {
-          margin-top: 20px;
+        span {
+          font-size: 30px;
+        }
+      }
 
-          p {
-            display: inline;
-            font-size: 26px;
-            color: #ae7f35;
-          }
+      .money {
+        margin-top: 20px;
 
-          span {
-            font-size: 13px;
-          }
-
-          .longLine {
-            display: inline-block;
-            width: 50px;
-            height: 1px;
-            background: #ae7f35;
-            margin-right: 30px;
-          }
-
-          .shortLine {
-            display: inline-block;
-            width: 30px;
-            height: 1px;
-            background: #ae7f35;
-          }
+        p {
+          display: inline;
+          font-size: 26px;
+          color: #ae7f35;
         }
 
-        .aboutus {
-          text-align: center;
-          margin-top: 30px;
-          padding: 10px;
-          border: 1px solid #ae7f354d;
+        span {
+          font-size: 13px;
+        }
 
-          img {
-            height: 40px;
-          }
+        .longLine {
+          display: inline-block;
+          width: 50px;
+          height: 1px;
+          background: #ae7f35;
+          margin-right: 30px;
+        }
 
-          p {
-            font-size: 14px;
-            margin-top: 10px;
-          }
+        .shortLine {
+          display: inline-block;
+          width: 30px;
+          height: 1px;
+          background: #ae7f35;
+        }
+      }
+
+      .aboutus {
+        text-align: center;
+        margin-top: 30px;
+        padding: 10px;
+        border: 1px solid #ae7f354d;
+
+        img {
+          height: 40px;
+        }
+
+        p {
+          font-size: 14px;
+          margin-top: 10px;
         }
       }
     }
   }
+}
 </style>

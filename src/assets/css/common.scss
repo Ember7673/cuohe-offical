@@ -49,6 +49,11 @@ ol {
 
   /deep/ .el-dialog__title {
     color: #fff;
+    display: inline-block;
+    width: 283px;
+    overflow: hidden;
+    text-overflow:ellipsis; 
+    white-space: nowrap;
   }
 }
 
