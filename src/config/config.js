@@ -1,7 +1,7 @@
 /*
  * @Author: wangtengteng
  * @Date: 2020-11-24 18:06:42
- * @LastEditTime: 2020-12-07 15:47:53
+ * @LastEditTime: 2020-12-10 00:15:50
  * @FilePath: \cuohe-offical\src\config\config.js
  */
 const errorCode = {
@@ -32,6 +32,10 @@ const errorCode = {
   7017: {
     'en': 'invite_code generate by platform',
     'zh': '邀请码由平台生成，非用户创建'
+  },
+  7018: {
+    'en': 'nick name already exist',
+    'zh': '昵称已存在'
   },
   7008: {
     'en': 'this account already exist',
