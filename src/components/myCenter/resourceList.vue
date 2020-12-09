@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 19:34:53
- * @LastEditTime: 2020-12-09 16:58:42
+ * @LastEditTime: 2020-12-09 19:16:53
  * @FillPath: Do not edit
 -->
 <template>
@@ -446,14 +446,10 @@ export default {
 
       .descriptionContentEditor {
         margin-left: 105px;
-      }
-
-      .descriptionContent {
-        display: -webkit-box;
-        text-overflow: ellipsis;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 5;
+        border: 1px solid #bfbfbf;
+        height: 100px;
         overflow: hidden;
+        overflow-y: scroll;
       }
 
       .uploadFileLabel {

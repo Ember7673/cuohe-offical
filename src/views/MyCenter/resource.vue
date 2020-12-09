@@ -2,7 +2,7 @@ import { uuid } from '@/utils/index';
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:37:42
- * @LastEditTime: 2020-12-09 17:06:19
+ * @LastEditTime: 2020-12-09 19:25:00
  * @FillPath: Do not edit
 -->
 <template>
@@ -43,7 +43,7 @@ import { uuid } from '@/utils/index';
             <listMoudle :list="resourcesList"></listMoudle>
           </el-tab-pane>
         </el-tabs>
-        <button class="create-requirement" @click="clickCreateRequirement">+ 创建资源</button>
+        <button class="create-requirement" v-show="Number(this.userInfo.status) === 6" @click="clickCreateRequirement">+ 创建资源</button>
       </div>
 
       <el-dialog customClass="customDialog" title="创建资源" :visible.sync="createRequirementVisible" width="800px">

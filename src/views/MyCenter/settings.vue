@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 09:25:22
- * @LastEditTime: 2020-12-09 18:27:46
+ * @LastEditTime: 2020-12-09 18:42:54
  * @FillPath: Do not edit
 -->
 <template>
@@ -24,7 +24,6 @@
           <div class="info line">
             <p><span>昵称：</span>{{userInfo.nickname}}</p>
             <p><span>手机号：</span>{{userInfo.phone_num}}</p>
-
             <button class="editorNickname btn" @click="nicknameVisible = true;changeInfo.nickname = userInfo.nickname; nicknameExit=false;">编辑</button>
           </div>
           <div class="line">

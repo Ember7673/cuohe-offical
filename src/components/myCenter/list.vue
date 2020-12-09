@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 19:34:53
- * @LastEditTime: 2020-12-09 17:23:51
+ * @LastEditTime: 2020-12-09 19:29:43
  * @FillPath: Do not edit
 -->
 <template>
@@ -36,8 +36,8 @@
       <img src="../../assets/image/empty.png" alt="">
     </div>
     <el-dialog customClass="details customDialog" :title="curItem.name" :visible.sync="curItemVisible" @closed="onClose">
-      <div class="">
-        <span v-show="userInfo && Number(userInfo.status) === 6" class="action editor" @click="onEdit">编辑</span>
+      <div>
+        <span v-show="userInfo && Number(userInfo.status) === 6  && Number(curItem.status) !==3" class="action editor" @click="onEdit">编辑</span>
         <span v-show="userInfo && Number(userInfo.status) === 6" class="action delete" @click="onDeleteRequirment">删除</span>
         <!-- <p class="status">
           <span>状态：{{curItem.status}}</span>
@@ -143,6 +143,7 @@ export default {
       this.filesList = [];
       this.curItem = this.list[index];
       this.curItemVisible = true;
+      console.log(this.curItem.status)
 
       switch (this.curItem.status) {
         case '1':
@@ -445,14 +446,10 @@ export default {
 
       .descriptionContentEditor {
         margin-left: 105px;
-      }
-
-      .descriptionContent {
-        display: -webkit-box;
-        text-overflow: ellipsis;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 5;
+        border: 1px solid #bfbfbf;
+        height: 100px;
         overflow: hidden;
+        overflow-y: scroll;
       }
 
       .uploadFileLabel {

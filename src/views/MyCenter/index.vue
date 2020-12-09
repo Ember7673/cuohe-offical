@@ -2,7 +2,7 @@ import { uuid } from '@/utils/index';
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:37:42
- * @LastEditTime: 2020-12-09 17:04:55
+ * @LastEditTime: 2020-12-09 19:35:02
  * @FillPath: Do not edit
 -->
 <template>
@@ -156,6 +156,8 @@ export default {
       loading: true,
       filesList: [], //上传文件列表
       pageindex: 1,
+      requirementTotalLen: 0,
+      resourceTotalLen: 0,
     }
   },
   created () {
