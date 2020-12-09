@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 09:25:22
- * @LastEditTime: 2020-12-05 09:29:13
+ * @LastEditTime: 2020-12-09 16:38:00
  * @FillPath: Do not edit
 -->
 <template>
@@ -332,6 +332,7 @@ export default {
       this.checkNnickNameExist(val)
     },
     editNickname () {
+      this.checkNnickNameExist(val);
       if (this.nicknameExit) return;
       updateUserInfoMoudle({
         reqid: uuid(),

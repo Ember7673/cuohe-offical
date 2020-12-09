@@ -2,7 +2,7 @@ import { uuid } from '@/utils/index';
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:37:42
- * @LastEditTime: 2020-12-08 10:16:09
+ * @LastEditTime: 2020-12-09 17:04:55
  * @FillPath: Do not edit
 -->
 <template>
@@ -152,7 +152,7 @@ export default {
         }],
       },
       createSuccessVisible: false,
-      pagestatus: '1', // 当前需求列表状态
+      pagestatus: '1,2,3,4', // 当前需求列表状态
       loading: true,
       filesList: [], //上传文件列表
       pageindex: 1,
@@ -215,16 +215,20 @@ export default {
           this.requirementList.forEach(item => {
             switch (item.status) {
               case 1:
-                item.statusBtn = '已提交';
+                item.statusBtn = '待审核';
+                item.statusSubText = 'P';
                 break;
               case 2:
                 item.statusBtn = '已审核';
+                item.statusSubText = 'A';
                 break;
               case 3:
                 item.statusBtn = '已对接';
+                item.statusSubText = 'D';
                 break;
               case 4:
                 item.statusBtn = '已完成';
+                item.statusSubText = 'C';
                 break;
             }
           })

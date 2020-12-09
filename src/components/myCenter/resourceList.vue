@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 19:34:53
- * @LastEditTime: 2020-12-08 11:23:27
+ * @LastEditTime: 2020-12-09 16:58:42
  * @FillPath: Do not edit
 -->
 <template>
@@ -11,7 +11,7 @@
         <li v-for="(item, index) in list" :key="index" @click="clickList(index)">
           <div class="r-content-header">
             <p class="title">{{item.name}}</p>
-            <button class="r-content-btn">{{item.statusBtn}}</button>
+            <!-- <button class="r-content-btn">{{item.statusBtn}}</button> -->
           </div>
           <div class="r-content-des">
             <p class="descriptionContent" style="white-space: pre-wrap;">
@@ -19,6 +19,14 @@
             </p>
           </div>
           <div class="r-content-time">发布时间：{{item.create_time}}</div>
+          <div class="r-content-status">
+            <img v-show="Number(item.status) === 1" src="../../assets/image/status/1.jpg" alt="">
+            <img v-show="Number(item.status) === 2" src="../../assets/image/status/2.jpg" alt="">
+            <img v-show="Number(item.status) === 3" src="../../assets/image/status/3.jpg" alt="">
+            <img v-show="Number(item.status) === 4" src="../../assets/image/status/4.jpg" alt="">
+            <p class="statusText">{{item.statusBtn}}</p>
+            <p class="statusSubText">{{item.statusSubText}}</p>
+          </div>
         </li>
       </ul>
       <el-pagination :current-page="pageindex" background layout="prev, pager, next" :page-size="10" :total="size" @current-change="currentChange">
@@ -143,15 +151,6 @@ export default {
       this.filesList = [];
       this.curItem = this.list[index];
       this.curItemVisible = true;
-
-      switch (this.curItem.status) {
-        case '1':
-          this.curItem.statusText = '已创建';
-          break;
-        case '2':
-          this.curItem.statusText = '已审核';
-          break;
-      }
       this.filesList.push(...this.curItem.pic_annex,
         ...this.curItem.video_annex,
         ...this.curItem.file_annex)
@@ -283,11 +282,11 @@ export default {
 
   li {
     width: 90%;
+    height: 135px;
     border: 1px solid #ddd;
     padding: 20px;
     position: relative;
     margin-bottom: 20px;
-    // background: #fff;
 
     &:nth-of-type(odd) {
       background: #f5f5f5;
@@ -319,18 +318,33 @@ export default {
         margin-right: 20px;
       }
     }
+  }
 
-    .r-content-btn {
+  .r-content-status {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 57px;
+    img {
+      height: 135px;
+    }
+    .statusSubText {
+      width: 57px;
+      text-align: center;
       position: absolute;
-      right: 20px;
-      top: 14px;
-      width: 200px;
-      height: 30px;
-      line-height: 30px;
-      background: #f7941d;
-      color: #fff;
-      border: none;
-      border-radius: 3px;
+      bottom: 40px;
+      font-size: 18px;
+      font-weight: 400;
+      color: #000000;
+      font-weight: bold;
+    }
+    .statusText {
+      width: 57px;
+      position: absolute;
+      bottom: 20px;
+      font-size: 12px;
+      color: #000000;
+      text-align: center;
     }
   }
 
@@ -356,7 +370,7 @@ export default {
     color: #4c4c4c;
     position: absolute;
     bottom: 15px;
-    right: 15px;
+    right: 65px;
   }
 
   .empty {

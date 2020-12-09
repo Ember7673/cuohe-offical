@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 19:34:53
- * @LastEditTime: 2020-12-08 11:22:51
+ * @LastEditTime: 2020-12-09 17:00:16
  * @FillPath: Do not edit
 -->
 <template>
@@ -11,7 +11,7 @@
         <li v-for="(item, index) in list" :key="index" @click="clickList(index)">
           <div class="r-content-header">
             <p class="title">{{item.name}}</p>
-            <button class="r-content-btn" :class="'status' + item.status">{{item.statusBtn}}</button>
+            <!-- <button class="r-content-btn" :class="'status' + item.status">{{item.statusBtn}}</button> -->
           </div>
           <div class="r-content-des">
             <p class="descriptionContent" style="white-space: pre-wrap;">
@@ -19,6 +19,14 @@
             </p>
           </div>
           <div class="r-content-time">发布时间：{{item.create_time}}</div>
+          <div class="r-content-status">
+            <img v-show="Number(item.status) === 1" src="../../assets/image/status/1.jpg" alt="">
+            <img v-show="Number(item.status) === 2" src="../../assets/image/status/2.jpg" alt="">
+            <img v-show="Number(item.status) === 3" src="../../assets/image/status/3.jpg" alt="">
+            <img v-show="Number(item.status) === 4" src="../../assets/image/status/4.jpg" alt="">
+            <p class="statusText">{{item.statusBtn}}</p>
+            <p class="statusSubText">{{item.statusSubText}}</p>
+          </div>
         </li>
       </ul>
       <el-pagination :current-page="pageindex" background layout="prev, pager, next" :page-size="10" :total="size" @current-change="currentChange">
@@ -276,6 +284,7 @@ export default {
 
   li {
     width: 90%;
+    height: 135px;
     border: 1px solid #ddd;
     padding: 20px;
     position: relative;
@@ -284,6 +293,10 @@ export default {
 
     &:nth-of-type(odd) {
       background: #f5f5f5;
+    }
+
+    &:hover {
+      box-shadow: 3px 3px 20px rgba(1, 1, 1, 0.15);
     }
   }
 
@@ -313,19 +326,6 @@ export default {
       }
     }
 
-    .r-content-btn {
-      position: absolute;
-      right: 20px;
-      top: 14px;
-      width: 200px;
-      height: 30px;
-      line-height: 30px;
-      background: #dad7d7;
-      color: #fff;
-      border: none;
-      border-radius: 3px;
-    }
-
     .status1 {
       background: #dad7d7;
     }
@@ -340,6 +340,34 @@ export default {
 
     .status4 {
       background: #1ac76b;
+    }
+  }
+
+  .r-content-status {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 57px;
+    img {
+      height: 135px;
+    }
+    .statusSubText {
+      width: 57px;
+      text-align: center;
+      position: absolute;
+      bottom: 40px;
+      font-size: 18px;
+      font-weight: 400;
+      color: #000000;
+      font-weight: bold;
+    }
+    .statusText {
+      width: 57px;
+      position: absolute;
+      bottom: 20px;
+      font-size: 12px;
+      color: #000000;
+      text-align: center;
     }
   }
 
@@ -365,7 +393,7 @@ export default {
     color: #4c4c4c;
     position: absolute;
     bottom: 15px;
-    right: 15px;
+    right: 65px;
   }
 
   .empty {
