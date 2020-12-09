@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 19:34:53
- * @LastEditTime: 2020-12-09 17:00:16
+ * @LastEditTime: 2020-12-09 17:23:51
  * @FillPath: Do not edit
 -->
 <template>
@@ -284,7 +284,7 @@ export default {
 
   li {
     width: 90%;
-    height: 135px;
+    height: 166px;
     border: 1px solid #ddd;
     padding: 20px;
     position: relative;
@@ -313,34 +313,6 @@ export default {
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-
-    .r-content-mark {
-      margin-bottom: 20px;
-
-      span {
-        color: #f7941d;
-        border: 1px solid #f7941d;
-        border-radius: 40px;
-        padding: 5px 10px;
-        margin-right: 20px;
-      }
-    }
-
-    .status1 {
-      background: #dad7d7;
-    }
-
-    .status2 {
-      background: #f7941d;
-    }
-
-    .status3 {
-      background: #1d84f7;
-    }
-
-    .status4 {
-      background: #1ac76b;
-    }
   }
 
   .r-content-status {
@@ -349,7 +321,8 @@ export default {
     top: 0px;
     width: 57px;
     img {
-      height: 135px;
+      width: 57px;
+      height: 166px;
     }
     .statusSubText {
       width: 57px;

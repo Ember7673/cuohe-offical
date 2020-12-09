@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 09:25:22
- * @LastEditTime: 2020-12-09 16:38:00
+ * @LastEditTime: 2020-12-09 18:27:46
  * @FillPath: Do not edit
 -->
 <template>
@@ -25,7 +25,7 @@
             <p><span>昵称：</span>{{userInfo.nickname}}</p>
             <p><span>手机号：</span>{{userInfo.phone_num}}</p>
 
-            <button class="editorNickname btn" @click="nicknameVisible = true;">编辑</button>
+            <button class="editorNickname btn" @click="nicknameVisible = true;changeInfo.nickname = userInfo.nickname; nicknameExit=false;">编辑</button>
           </div>
           <div class="line">
             <p><span>账号身份：</span>{{userInfo.label ==='1' ? '资源提供方': userInfo.label==='2' ? '需求方' : '资源提供方；需求方'}}</p>
@@ -61,7 +61,9 @@
     </el-dialog>
     <el-dialog customClass="customDialog" title="修改昵称" :visible.sync="nicknameVisible">
       <el-input placeholder="请输入昵称" v-model="changeInfo.nickname" @input="nicknameChange" />
-      <span v-show="nicknameExit" class="nicknameExit">昵称已存在</span>
+      <div class="nicknameExit">
+        <span v-show="nicknameExit">昵称已存在</span>
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="nicknameVisible = false">取 消</el-button>
         <el-button type="primary" @click="editNickname">确 定</el-button>
@@ -213,7 +215,6 @@ export default {
       })
     },
     getRequirementList (status, pageindex, pagesize) {
-      console.log(this.userInfo.id)
       getRequirementListMoudle({
         reqid: uuid(),
         status,
@@ -332,7 +333,7 @@ export default {
       this.checkNnickNameExist(val)
     },
     editNickname () {
-      this.checkNnickNameExist(val);
+      this.checkNnickNameExist(this.changeInfo.nickname);
       if (this.nicknameExit) return;
       updateUserInfoMoudle({
         reqid: uuid(),
@@ -645,9 +646,12 @@ export default {
   }
 
   .nicknameExit {
+    height: 30px;
     color: red;
     padding-top: 10px;
-    display: inline-block;
+    span {
+      display: inline-block;
+    }
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-24 09:25:37
- * @LastEditTime: 2020-12-09 16:36:46
+ * @LastEditTime: 2020-12-09 17:50:58
  * @FilePath: \cuohe-offical\src\views\Userinfo\personalInfo.vue
 -->
 <template>
@@ -73,6 +73,7 @@ const AVATARURL = 'https://cuohe-1304244764.cos.ap-beijing.myqcloud.com/';
 export default {
   data () {
     var checkNickname = (rule, value, callback) => {
+      console.log('this.nicknameExit', this.nicknameExit)
       if (value === '') {
         callback(new Error('请输入昵称'));
       } else if (this.nicknameExit) {
@@ -96,7 +97,7 @@ export default {
         },
         nickname: {
           required: true,
-          message: "请输入昵称",
+          validator: checkNickname,
           trigger: "blur"
         },
         industry: {
@@ -227,14 +228,12 @@ export default {
       this.checkNnickNameExist(val)
     },
     onSubmit () {
+      this.checkNnickNameExist(this.InfoForm.nickname);
       if (!this.selectedAvatar) {
         this.$message.warning('请选择头像');
         return;
       }
-      this.checkNnickNameExist(val);
-      if (!this.nicknameExit) {
-        return;
-      }
+      if (this.nicknameExit) return;
       let user_id = this.userInfo.id;
       setUserInfoMoudle({
         reqid: uuid(),
