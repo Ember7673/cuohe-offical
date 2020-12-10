@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 19:34:53
- * @LastEditTime: 2020-12-10 15:21:37
+ * @LastEditTime: 2020-12-10 16:55:46
  * @FillPath: Do not edit
 -->
 <template>
@@ -290,6 +290,10 @@ export default {
 
     &:nth-of-type(odd) {
       background: #f5f5f5;
+    }
+
+    &:hover {
+      box-shadow: 3px 3px 20px rgba(1, 1, 1, 0.15);
     }
   }
 
