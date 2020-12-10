@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-24 09:25:37
- * @LastEditTime: 2020-12-09 17:50:58
+ * @LastEditTime: 2020-12-10 16:51:17
  * @FilePath: \cuohe-offical\src\views\Userinfo\personalInfo.vue
 -->
 <template>
@@ -16,22 +16,22 @@
     </div>
     <div class="content">
       <el-form :model="InfoForm" status-icon :rules="rules" ref="InfoForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="选择头像：" prop="avatar">
+        <el-form-item label="选择头像：">
           <img v-if="!selectedAvatar" class="avatar" src='../../assets/image/defaultAvatar.png' alt="" @click="selectAvatar">
           <img v-else class="avatar" :src="selectedAvatar" alt="" @click="selectAvatar">
         </el-form-item>
         <el-form-item class="nickname" label="昵称：" prop="nickname">
-          <el-input v-model="InfoForm.nickname" @input="nicknameChange"></el-input>
+          <el-input v-model="InfoForm.nickname" @input="nicknameChange" placeholder="请输入昵称"></el-input>
           <!-- <span class="exist">昵称已存在，请更换昵称</span> -->
         </el-form-item>
         <el-form-item label="行业类型：" prop="industry">
-          <el-select v-model="InfoForm.industry" placeholder="请选择">
+          <el-select v-model="InfoForm.industry" placeholder="请选择行业类型">
             <el-option v-for="item in industryOptions" :key="item" :value="item">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="职位：" prop="position">
-          <el-select v-model="InfoForm.position" placeholder="请选择">
+          <el-select v-model="InfoForm.position" placeholder="请选择职位">
             <el-option v-for="item in positionOptions" :key="item" :value="item">
             </el-option>
           </el-select>
@@ -76,6 +76,8 @@ export default {
       console.log('this.nicknameExit', this.nicknameExit)
       if (value === '') {
         callback(new Error('请输入昵称'));
+      } else if (value.length > 10) {
+        callback(new Error('昵称不要超过十个字符!'));
       } else if (this.nicknameExit) {
         callback(new Error('昵称已存在，请更换昵称!'));
       } else {
@@ -90,11 +92,6 @@ export default {
         position: '',
       },
       rules: {
-        avatar: {
-          required: true,
-          message: "请选择头像",
-          trigger: "blur"
-        },
         nickname: {
           required: true,
           validator: checkNickname,
@@ -228,32 +225,36 @@ export default {
       this.checkNnickNameExist(val)
     },
     onSubmit () {
-      this.checkNnickNameExist(this.InfoForm.nickname);
       if (!this.selectedAvatar) {
         this.$message.warning('请选择头像');
         return;
       }
-      if (this.nicknameExit) return;
-      let user_id = this.userInfo.id;
-      setUserInfoMoudle({
-        reqid: uuid(),
-        user_id,
-        avatar: this.selectedAvatar,
-        industry: this.InfoForm.industry,
-        position: this.InfoForm.position,
-        label: this.label,
-        nickname: this.InfoForm.nickname
-      }).then(res => {
-        const {
-          status,
-          message,
-          data
-        } = res.data;
-        if (!status) {
-          this.$router.push('/done');
-          this.$message.success('提交成功');
-        } else {
-          this.$message.error(message);
+      this.$refs['InfoForm'].validate((valid) => {
+        if (valid) {
+          this.checkNnickNameExist(this.InfoForm.nickname);
+          if (this.nicknameExit) return;
+          let user_id = this.userInfo.id;
+          setUserInfoMoudle({
+            reqid: uuid(),
+            user_id,
+            avatar: this.selectedAvatar,
+            industry: this.InfoForm.industry,
+            position: this.InfoForm.position,
+            label: this.label,
+            nickname: this.InfoForm.nickname
+          }).then(res => {
+            const {
+              status,
+              message,
+              data
+            } = res.data;
+            if (!status) {
+              this.$router.push('/done');
+              this.$message.success('提交成功');
+            } else {
+              this.$message.error(message);
+            }
+          })
         }
       })
     }

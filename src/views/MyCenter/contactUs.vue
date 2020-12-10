@@ -1,23 +1,12 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-03 19:27:18
- * @LastEditTime: 2020-12-08 14:19:45
+ * @LastEditTime: 2020-12-10 16:15:04
  * @FillPath: Do not edit
 -->
 <template>
   <div class="contactUs">
-    <div class="header">
-      <img class="avatar" :src="userInfo.avatar" alt="">
-      <div class="info">
-        <p class="nickname">{{userInfo.nickname}}</p>
-        <p class="position">{{userInfo.position}}</p>
-      </div>
-      <div>
-        <div class="number requireNumber">发布<span>{{requirementLength}}</span>次需求</div>
-        <div class="number resourceNumber">提供<span>{{resourcesLength}}</span>次资源</div>
-      </div>
-
-    </div>
+    <SettingHeader />
     <div class="content">
       <el-tabs>
         <el-tab-pane label="联系我们">
@@ -31,10 +20,7 @@
 </template>
 
 <script>
-import {
-  getRequirementListMoudle,
-  getResourceListMoudle
-} from '@/api/myCenter';
+import SettingHeader from '@/components/common/settingHeader'
 import {
   customerServicePhoneNumMoudle,
   getIsLogin
@@ -43,6 +29,9 @@ import {
   uuid
 } from '@/utils/index';
 export default {
+  components: {
+    SettingHeader
+  },
   data () {
     return {
       phone_num: '',
@@ -66,8 +55,6 @@ export default {
         } = res.data;
         if (!status) {
           this.userInfo = user;
-          this.getRequirementList('1,2,3,4', 1, 10);
-          this.getResourceList('1,2', 1, 10);
           this.getPhoneNum();
         } else {
           this.$message.error(message);
@@ -90,47 +77,6 @@ export default {
         }
       })
     },
-    getRequirementList (status, pageindex, pagesize) {
-      console.log(this.userInfo.id)
-      getRequirementListMoudle({
-        reqid: uuid(),
-        status,
-        user_id: this.userInfo.id,
-        pageindex,
-        pagesize
-      }).then(res => {
-        const {
-          status,
-          data,
-          message
-        } = res.data;
-        if (!status) {
-          this.requirementLength = data.size;
-        } else {
-          this.$message.error(message);
-        }
-      })
-    },
-    getResourceList (status, pageindex, pagesize) {
-      getResourceListMoudle({
-        reqid: uuid(),
-        status,
-        user_id: this.userInfo.id,
-        pageindex,
-        pagesize
-      }).then(res => {
-        const {
-          status,
-          data,
-          message
-        } = res.data;
-        if (!status) {
-          this.resourcesLength = data.size;
-        } else {
-          this.$message.error(message);
-        }
-      })
-    },
   }
 }
 </script>
@@ -139,46 +85,6 @@ export default {
 .contactUs {
   height: 100vh;
   background: #fff;
-
-  .header {
-    width: 100%;
-    height: 250px;
-    background-image: url("../../assets/image/settingsBg.jpg");
-    background-size: cover;
-    text-align: center;
-    position: relative;
-    color: #fff;
-
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 100%;
-      margin-top: 65px;
-    }
-
-    .info {
-      display: inline-block;
-      margin-left: 20px;
-
-      .nickname {
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 20px;
-        text-align: left;
-      }
-    }
-
-    .number {
-      display: inline-block;
-      font-size: 14px;
-      margin: 30px 60px 0 0;
-
-      span {
-        font-size: 19px;
-        font-weight: 500;
-      }
-    }
-  }
 
   /deep/ .el-tabs__nav {
     height: 80px;

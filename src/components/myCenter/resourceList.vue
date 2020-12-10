@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 19:34:53
- * @LastEditTime: 2020-12-10 09:32:29
+ * @LastEditTime: 2020-12-10 15:21:37
  * @FillPath: Do not edit
 -->
 <template>
@@ -282,7 +282,7 @@ export default {
 
   li {
     width: 90%;
-    height: 135px;
+    height: 166px;
     border: 1px solid #ddd;
     padding: 20px;
     position: relative;
@@ -326,7 +326,8 @@ export default {
     top: 0px;
     width: 57px;
     img {
-      height: 135px;
+      width: 57px;
+      height: 166px;
     }
     .statusSubText {
       width: 57px;

@@ -1,23 +1,12 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 23:50:49
- * @LastEditTime: 2020-12-08 12:58:35
+ * @LastEditTime: 2020-12-10 16:14:00
  * @FillPath: Do not edit
 -->
 <template>
   <div class="inviteCode">
-    <div class="header">
-      <img class="avatar" :src="userInfo.avatar" alt="">
-      <div class="info">
-        <p class="nickname">{{userInfo.nickname}}</p>
-        <p class="position">{{userInfo.position}}</p>
-      </div>
-      <div>
-        <div class="number requireNumber">发布<span>{{requirementLength}}</span>次需求</div>
-        <div class="number resourceNumber">提供<span>{{resourcesLength}}</span>次资源</div>
-      </div>
-
-    </div>
+    <SettingHeader />
     <div class="content">
       <el-tabs v-model="activeName" @tab-click="handleTabsClick">
         <el-tab-pane label="邀请码列表" name="1">
@@ -50,9 +39,8 @@
 </template>
 
 <script>
+import SettingHeader from '@/components/common/settingHeader'
 import {
-  getRequirementListMoudle,
-  getResourceListMoudle,
   inviteCodeMoudle,
   createInviteCodeMoudle
 } from '@/api/myCenter';
@@ -66,6 +54,9 @@ import {
   uuid
 } from "@/utils/index";
 export default {
+  components: {
+    SettingHeader
+  },
   data () {
     return {
       activeName: '1',
@@ -96,8 +87,6 @@ export default {
             this.$router.push('/');
             return;
           }
-          this.getRequirementList('1,2,3,4', 1, 1);
-          this.getResourceList('1,2', 1, 1);
           this.getInviteCode();
         } else {
           this.$message.error(message);
@@ -128,48 +117,6 @@ export default {
               item.statusText = '生成已使用';
             }
           })
-        } else {
-          this.$message.error(message);
-        }
-      })
-    },
-    getRequirementList (status, pageindex, pagesize) {
-      let user_id = this.userInfo.id;
-      getRequirementListMoudle({
-        reqid: uuid(),
-        status,
-        user_id,
-        pageindex,
-        pagesize
-      }).then(res => {
-        const {
-          status,
-          data,
-          message
-        } = res.data;
-        if (!status) {
-          this.requirementLength = data.size;
-        } else {
-          this.$message.error(message);
-        }
-      })
-    },
-    getResourceList (status, pageindex, pagesize) {
-      let user_id = this.userInfo.id;
-      getResourceListMoudle({
-        reqid: uuid(),
-        status,
-        user_id,
-        pageindex,
-        pagesize
-      }).then(res => {
-        const {
-          status,
-          data,
-          message
-        } = res.data;
-        if (!status) {
-          this.resourcesLength = data.size;
         } else {
           this.$message.error(message);
         }
@@ -217,46 +164,6 @@ export default {
 .inviteCode {
   height: 100vh;
   background: #fff;
-
-  .header {
-    width: 100%;
-    height: 250px;
-    background-image: url("../../assets/image/settingsBg.jpg");
-    background-size: cover;
-    text-align: center;
-    position: relative;
-    color: #fff;
-
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 100%;
-      margin-top: 65px;
-    }
-
-    .info {
-      display: inline-block;
-      margin-left: 20px;
-
-      .nickname {
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 20px;
-        text-align: left;
-      }
-    }
-
-    .number {
-      display: inline-block;
-      font-size: 14px;
-      margin: 30px 60px 0 0;
-
-      span {
-        font-size: 19px;
-        font-weight: 500;
-      }
-    }
-  }
 
   .content {
     width: 60%;

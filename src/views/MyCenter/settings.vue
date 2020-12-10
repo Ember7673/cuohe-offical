@@ -1,30 +1,19 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 09:25:22
- * @LastEditTime: 2020-12-10 09:18:49
+ * @LastEditTime: 2020-12-10 16:44:12
  * @FillPath: Do not edit
 -->
 <template>
   <div class="settings">
-    <div class="header">
-      <img class="avatar" :src="userInfo.avatar" alt="">
-      <div class="info">
-        <p class="nickname">{{userInfo.nickname}}</p>
-        <p class="position">{{userInfo.position}}</p>
-      </div>
-      <div>
-        <div class="number requireNumber">发布<span>{{requirementLength}}</span>次需求</div>
-        <div class="number resourceNumber">提供<span>{{resourcesLength}}</span>次资源</div>
-      </div>
-
-    </div>
+    <SettingHeader />
     <div class="content">
       <el-tabs v-model="activeName">
         <el-tab-pane label="账号设置" name="1">
           <div class="info line">
             <p><span>昵称：</span>{{userInfo.nickname}}</p>
             <p><span>手机号：</span>{{userInfo.phone_num}}</p>
-            <button class="editorNickname btn" @click="nicknameVisible = true;changeInfo.nickname = userInfo.nickname; nicknameExit=false;">编辑</button>
+            <button class="editorNickname btn" @click="nicknameVisible = true;changeInfo.nickname = userInfo.nickname; nicknameExit=false;nicknameMaxLength=false;">编辑</button>
           </div>
           <div class="line">
             <p><span>账号身份：</span>{{userInfo.label ==='1' ? '资源提供方': userInfo.label==='2' ? '需求方' : '资源提供方；需求方'}}</p>
@@ -62,6 +51,7 @@
       <el-input placeholder="请输入昵称" v-model="changeInfo.nickname" @input="nicknameChange" />
       <div class="nicknameExit">
         <span v-show="nicknameExit">昵称已存在</span>
+        <span v-show="nicknameMaxLength">昵称不要超过十个字符</span>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="nicknameVisible = false">取 消</el-button>
@@ -115,10 +105,7 @@
 </template>
 
 <script>
-import {
-  getRequirementListMoudle,
-  getResourceListMoudle
-} from '@/api/myCenter';
+import SettingHeader from '@/components/common/settingHeader'
 import {
   getAvatarListMoudle,
   updateUserInfoMoudle,
@@ -134,6 +121,9 @@ import {
 } from "@/utils/index";
 const AVATARURL = 'https://cuohe-1304244764.cos.ap-beijing.myqcloud.com/';
 export default {
+  components: {
+    SettingHeader
+  },
   data () {
     return {
       changeInfo: {},
@@ -152,7 +142,8 @@ export default {
       industryOptions: [],
       positionOptions: [],
       checkList: [],
-      nicknameExit: false
+      nicknameExit: false,
+      nicknameMaxLength: false
     }
   },
   created () {
@@ -174,8 +165,6 @@ export default {
         if (!status) {
           this.userInfo = user;
           this.changeInfo = JSON.parse(JSON.stringify(this.userInfo));
-          this.getRequirementList('1,2,3,4', 1, 10);
-          this.getResourceList('1,2', 1, 10);
         } else {
           this.$message.error(message);
         }
@@ -208,46 +197,6 @@ export default {
         } = res.data;
         if (!status) {
           this.positionOptions = data;
-        } else {
-          this.$message.error(message);
-        }
-      })
-    },
-    getRequirementList (status, pageindex, pagesize) {
-      getRequirementListMoudle({
-        reqid: uuid(),
-        status,
-        user_id: this.userInfo.id,
-        pageindex,
-        pagesize
-      }).then(res => {
-        const {
-          status,
-          data,
-          message
-        } = res.data;
-        if (!status) {
-          this.requirementLength = data.size;
-        } else {
-          this.$message.error(message);
-        }
-      })
-    },
-    getResourceList (status, pageindex, pagesize) {
-      getResourceListMoudle({
-        reqid: uuid(),
-        status,
-        user_id: this.userInfo.id,
-        pageindex,
-        pagesize
-      }).then(res => {
-        const {
-          status,
-          data,
-          message
-        } = res.data;
-        if (!status) {
-          this.resourcesLength = data.size;
         } else {
           this.$message.error(message);
         }
@@ -330,10 +279,16 @@ export default {
     nicknameChange (val) {
       if (!val) return;
       this.checkNnickNameExist(val)
+      if (val.length > 10) {
+        this.nicknameMaxLength = true;
+      } else {
+        this.nicknameMaxLength = false;
+      }
     },
     editNickname () {
+      console.log(this.nicknameMaxLength)
       this.checkNnickNameExist(this.changeInfo.nickname);
-      if (this.nicknameExit) return;
+      if (this.nicknameExit || this.nicknameMaxLength) return;
       updateUserInfoMoudle({
         reqid: uuid(),
         user_id: this.userInfo.id,
@@ -355,7 +310,9 @@ export default {
           this.$alert(
             `您的昵称修改申请已经提交，请您耐心等待审核。审核期间，不可以创建资源和需求，可以浏览已创建资源和需求。`,
             '已提交申请', {
-            confirmButtonText: '确定'
+            confirmButtonText: '确定',
+          }).then(() => {
+            location.reload();
           });
         } else {
           this.$message.error(message);
@@ -466,46 +423,6 @@ export default {
 <style lang="scss" scoped>
 .settings {
   background: #fff;
-
-  .header {
-    width: 100%;
-    height: 250px;
-    background-image: url("../../assets/image/settingsBg.jpg");
-    background-size: cover;
-    text-align: center;
-    position: relative;
-    color: #fff;
-
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 100%;
-      margin-top: 65px;
-    }
-
-    .info {
-      display: inline-block;
-      margin-left: 20px;
-
-      .nickname {
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 20px;
-        text-align: left;
-      }
-    }
-
-    .number {
-      display: inline-block;
-      font-size: 14px;
-      margin: 30px 60px 0 0;
-
-      span {
-        font-size: 19px;
-        font-weight: 500;
-      }
-    }
-  }
 
   .content {
     width: 60%;
