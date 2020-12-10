@@ -2,7 +2,7 @@ import { uuid } from '@/utils/index';
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:37:42
- * @LastEditTime: 2020-12-10 09:24:42
+ * @LastEditTime: 2020-12-10 09:46:16
  * @FillPath: Do not edit
 -->
 <template>
@@ -19,7 +19,7 @@ import { uuid } from '@/utils/index';
             需求
             <p class="fun-title-en">DEMAND</p>
           </div>
-          <div class="fun-number requirement">{{requirementLength}}</div>
+          <div class="fun-number requirement">{{requirementTotalLen}}</div>
         </li>
         <li @click="toResource">
           <div class="fun-title">
@@ -198,11 +198,11 @@ export default {
     refreshList () {
       this.getRequirementList(this.pagestatus, this.pageindex)
     },
-    getRequirementList (status, pageindex, pagesize = 10) {
+    getRequirementList (requirementStatus, pageindex, pagesize = 10) {
       let user_id = this.userInfo.id;
       getRequirementListMoudle({
         reqid: uuid(),
-        status,
+        status: requirementStatus,
         user_id,
         pageindex,
         pagesize
@@ -213,6 +213,9 @@ export default {
           message
         } = res.data;
         if (!status) {
+          if (requirementStatus === '1,2,3,4') {
+            this.requirementTotalLen = data.size;
+          }
           this.requirementList = data.meets;
           this.requirementList.forEach(item => {
             switch (item.status) {

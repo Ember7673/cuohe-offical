@@ -2,7 +2,7 @@ import { uuid } from '@/utils/index';
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:37:42
- * @LastEditTime: 2020-12-09 19:25:00
+ * @LastEditTime: 2020-12-10 09:48:16
  * @FillPath: Do not edit
 -->
 <template>
@@ -26,7 +26,7 @@ import { uuid } from '@/utils/index';
             资源
             <p class="fun-title-en">RESOURCES</p>
           </div>
-          <div class="fun-number requirement">{{resourcesLength}}</div>
+          <div class="fun-number requirement">{{resourceAllLen}}</div>
         </li>
       </ul>
     </div>
@@ -156,6 +156,7 @@ export default {
       loading: true,
       filesList: [], //上传文件列表
       pageindex: 1,
+      resourceAllLen: 0  //所有资源的数量
     }
   },
   created () {
@@ -217,11 +218,11 @@ export default {
         }
       })
     },
-    getResourceList (status, pageindex, pagesize) {
+    getResourceList (resourceStatus, pageindex, pagesize) {
       let user_id = this.userInfo.id;
       getResourceListMoudle({
         reqid: uuid(),
-        status,
+        status: resourceStatus,
         user_id,
         pageindex,
         pagesize
@@ -232,6 +233,9 @@ export default {
           message
         } = res.data;
         if (!status) {
+          if (resourceStatus === '1,2') {
+            this.resourceAllLen = data.size;
+          }
           this.resourcesLength = data.size;
           this.resourcesList = data.meets;
           this.resourcesList.forEach(item => {
