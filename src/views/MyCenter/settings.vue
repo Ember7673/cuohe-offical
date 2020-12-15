@@ -1,13 +1,14 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 09:25:22
- * @LastEditTime: 2020-12-10 16:44:12
+ * @LastEditTime: 2020-12-15 16:27:26
  * @FillPath: Do not edit
 -->
 <template>
   <div class="settings">
     <SettingHeader />
     <div class="content">
+      <p class="tip" v-show="Number(userInfo.status) === 5">审核中</p>
       <el-tabs v-model="activeName">
         <el-tab-pane label="账号设置" name="1">
           <div class="info line">
@@ -425,11 +426,18 @@ export default {
   background: #fff;
 
   .content {
+    position: relative;
     width: 60%;
     margin: 0 auto;
     font-size: 14px;
     padding-bottom: 40px;
     color: #4c4c4c;
+    .tip {
+      position: absolute;
+      top: 29px;
+      right: 34px;
+      color: #c99540;
+    }
 
     /deep/ .el-tabs__nav {
       height: 80px;

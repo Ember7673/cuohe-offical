@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-10 15:58:07
- * @LastEditTime: 2020-12-10 16:33:19
+ * @LastEditTime: 2020-12-15 16:20:46
  * @FilePath: \cuohe-offical\src\components\common\settingHeader.vue
 -->
 <template>
@@ -124,7 +124,6 @@ export default {
     height: 80px;
     background: rgba($color: #000000, $alpha: 0.5);
     border-radius: 40px;
-    border: 1px solid #797878;
   }
 
   .avatar {
