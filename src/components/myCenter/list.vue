@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 19:34:53
- * @LastEditTime: 2020-12-10 15:55:55
+ * @LastEditTime: 2020-12-16 18:51:32
  * @FillPath: Do not edit
 -->
 <template>
@@ -25,7 +25,7 @@
             <img v-show="Number(item.status) === 3" src="../../assets/image/status/3.jpg" alt="">
             <img v-show="Number(item.status) === 4" src="../../assets/image/status/4.jpg" alt="">
             <p class="statusText">{{item.statusBtn}}</p>
-            <p class="statusSubText">{{item.statusSubText}}</p>
+            <!-- <p class="statusSubText">{{item.statusSubText}}</p> -->
           </div>
         </li>
       </ul>
@@ -314,32 +314,26 @@ export default {
   }
 
   .r-content-status {
+    width: 100px;
+    height: 80px;
     position: absolute;
-    right: 0px;
-    top: 0px;
-    width: 57px;
+    right: 130px;
+    top: 45%;
+    transform: translateY(-50%);
 
     img {
-      width: 57px;
-      height: 166px;
-    }
-
-    .statusSubText {
-      width: 57px;
-      text-align: center;
+      width: 30px;
       position: absolute;
-      bottom: 40px;
-      font-size: 18px;
-      font-weight: 400;
-      color: #000000;
-      font-weight: bold;
+      top: 0;
+      right: 13px;
     }
 
     .statusText {
       width: 57px;
       position: absolute;
-      bottom: 20px;
-      font-size: 12px;
+      top: 57%;
+      right: 0;
+      font-size: 15px;
       color: #000000;
       text-align: center;
     }
