@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 19:34:53
- * @LastEditTime: 2020-12-16 18:51:32
+ * @LastEditTime: 2020-12-17 14:19:43
  * @FillPath: Do not edit
 -->
 <template>
@@ -326,6 +326,7 @@ export default {
       position: absolute;
       top: 0;
       right: 13px;
+      border-radius: 100%;
     }
 
     .statusText {
