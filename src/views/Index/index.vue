@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:29:54
- * @LastEditTime: 2020-12-08 10:53:24
+ * @LastEditTime: 2020-12-18 17:41:02
  * @FillPath: Do not edit
 -->
 <template>
@@ -130,7 +130,7 @@ export default {
       width: 300px;
       min-height: 130px;
       margin-right: 50px;
-      margin-top: 30px;
+      margin-top: 89px;
       position: absolute;
       top: 90px;
       right: 10%;
