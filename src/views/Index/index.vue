@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:29:54
- * @LastEditTime: 2020-12-18 17:41:02
+ * @LastEditTime: 2020-12-18 20:08:15
  * @FillPath: Do not edit
 -->
 <template>
@@ -76,13 +76,15 @@ export default {
   background: #000;
   color: #fff;
   min-width: 1200px;
+  // height: calc(100%-70px);
 
   .home-body {
     position: relative;
     display: flex;
     width: 100%;
     padding-top: 10px;
-    height: 900px;
+    // height: 100%;
+    height: calc(100vh - 70px);
     background: #000;
     // max-width: 1500px;
     margin: 0 auto;
@@ -92,9 +94,9 @@ export default {
       flex: 1;
       width: 100%;
       position: relative;
-      min-height: 1000px;
       margin-left: 100px;
       margin-top: 70px;
+      overflow: hidden;
 
       img {
         width: 70%;
