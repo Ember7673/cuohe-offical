@@ -1,13 +1,13 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-11-16 09:29:54
- * @LastEditTime: 2020-12-18 20:08:15
+ * @LastEditTime: 2020-12-19 11:16:14
  * @FillPath: Do not edit
 -->
 <template>
   <div class="home">
-    <div class="home-body">
-      <div class="home-banner" @mousemove="onMouseover($event)">
+    <div class="home-body" @mousemove="onMouseover($event)">
+      <div class="home-banner">
         <div ref="banner2" class="banner2">
           <img src="../../assets/image/banner2.png" alt="">
         </div>
@@ -80,23 +80,19 @@ export default {
 
   .home-body {
     position: relative;
-    display: flex;
     width: 100%;
     padding-top: 10px;
-    // height: 100%;
     height: calc(100vh - 70px);
     background: #000;
-    // max-width: 1500px;
     margin: 0 auto;
     font-family: "Montserrat";
+    overflow: hidden;
 
     .home-banner {
-      flex: 1;
       width: 100%;
       position: relative;
       margin-left: 100px;
       margin-top: 70px;
-      overflow: hidden;
 
       img {
         width: 70%;
