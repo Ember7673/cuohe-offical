@@ -1,7 +1,7 @@
 <!--
  * @Author: wangtengteng
  * @Date: 2020-12-02 09:25:22
- * @LastEditTime: 2020-12-15 16:27:26
+ * @LastEditTime: 2020-12-24 18:45:14
  * @FillPath: Do not edit
 -->
 <template>
@@ -321,6 +321,10 @@ export default {
       })
     },
     editIndustry () {
+      if (this.changeInfo.industry === this.userInfo.industry) {
+        this.industryVisible = false;
+        return;
+      }
       updateUserInfoMoudle({
         reqid: uuid(),
         user_id: this.userInfo.id,
@@ -351,6 +355,10 @@ export default {
       })
     },
     editPosition () {
+      if (this.changeInfo.position === this.userInfo.position) {
+        this.positionVisible = false;
+        return;
+      }
       updateUserInfoMoudle({
         reqid: uuid(),
         user_id: this.userInfo.id,
@@ -389,12 +397,16 @@ export default {
         this.$message.warning('请选择账户身份');
         return;
       }
+      if (label === this.userInfo.label) {
+        this.labelVisible = false;
+        return;
+      }
       updateUserInfoMoudle({
         reqid: uuid(),
         user_id: this.userInfo.id,
         avatar: this.userInfo.avatar,
         industry: this.userInfo.industry,
-        position: this.changeInfo.position,
+        position: this.userInfo.position,
         label,
         nickname: this.userInfo.nickname
       }).then(res => {
